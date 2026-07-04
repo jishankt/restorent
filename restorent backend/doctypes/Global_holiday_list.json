@@ -1,0 +1,29 @@
+{
+  "name": "Holiday List",
+  "company_names": [
+    "Global"
+  ],
+  "fields": [
+    {
+      "id": "holiday_date",
+      "label": "Holiday Date",
+      "type": "Date",
+      "mandatory": true,
+      "is_default": true
+    },
+    {
+      "id": "description",
+      "label": "Description",
+      "type": "Data",
+      "mandatory": true,
+      "is_default": true
+    },
+    {
+      "id": "is_recurring",
+      "label": "Is Recurring",
+      "type": "Check",
+      "mandatory": false,
+      "is_default": true
+    }
+  ]
+}

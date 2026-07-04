@@ -1,0 +1,144 @@
+{
+  "branch": "All Branches",
+  "branch_name": "All Branches",
+  "branch_names": [
+    "All Branches"
+  ],
+  "company_names": [
+    "Global"
+  ],
+  "fields": [
+    {
+      "id": "name1",
+      "idx": 0,
+      "is_default": true,
+      "label": "Addon Name",
+      "mandatory": true,
+      "type": "Data"
+    },
+    {
+      "id": "addon_price",
+      "idx": 1,
+      "is_default": true,
+      "label": "Price",
+      "mandatory": true,
+      "type": "Float"
+    },
+    {
+      "id": "tax_applicable",
+      "idx": 2,
+      "is_default": true,
+      "label": "Tax Applicable",
+      "mandatory": false,
+      "type": "Check"
+    },
+    {
+      "id": "tax_rate",
+      "idx": 3,
+      "is_default": true,
+      "label": "Tax Rate",
+      "mandatory": false,
+      "type": "Float"
+    },
+    {
+      "id": "addon_image",
+      "idx": 4,
+      "is_default": true,
+      "label": "Addon Image",
+      "mandatory": false,
+      "type": "Attach Image"
+    },
+    {
+      "allow_create_new": false,
+      "hidden": false,
+      "id": "kitchen_1779441822028",
+      "idx": 5,
+      "is_default": false,
+      "label": "Kitchen",
+      "link_doctype": "",
+      "mandatory": false,
+      "type": "Section Break"
+    },
+    {
+      "allow_create_new": true,
+      "hidden": false,
+      "id": "kitchen",
+      "idx": 6,
+      "is_default": true,
+      "label": "Kitchen",
+      "link_doctype": "Kitchen",
+      "mandatory": false,
+      "type": "Table"
+    },
+    {
+      "allow_create_new": false,
+      "hidden": false,
+      "id": "item_group_1779441877640",
+      "idx": 7,
+      "is_default": false,
+      "label": "Item Group",
+      "link_doctype": "",
+      "mandatory": false,
+      "type": "Section Break"
+    },
+    {
+      "allow_create_new": true,
+      "hidden": false,
+      "id": "item_group",
+      "idx": 8,
+      "is_default": true,
+      "label": "Item Group",
+      "link_doctype": "Item Group",
+      "mandatory": false,
+      "type": "Table"
+    },
+    {
+      "allow_create_new": false,
+      "hidden": false,
+      "id": "variants_1779441957686",
+      "idx": 9,
+      "is_default": false,
+      "label": "Variants",
+      "link_doctype": "",
+      "mandatory": false,
+      "type": "Section Break"
+    },
+    {
+      "allow_create_new": true,
+      "hidden": false,
+      "id": "variant_table",
+      "idx": 10,
+      "is_default": true,
+      "label": "Variants",
+      "link_doctype": "Variant",
+      "mandatory": false,
+      "type": "Table"
+    },
+    {
+      "allow_create_new": false,
+      "hidden": false,
+      "id": "ingredients_1779441987186",
+      "idx": 11,
+      "is_default": false,
+      "label": "Ingredients",
+      "link_doctype": "",
+      "mandatory": false,
+      "type": "Section Break"
+    },
+    {
+      "allow_create_new": true,
+      "hidden": false,
+      "id": "ingredients",
+      "idx": 12,
+      "is_default": true,
+      "label": "Ingredients",
+      "link_doctype": "Ingredient & Nutrition",
+      "mandatory": false,
+      "type": "Table"
+    }
+  ],
+  "name": "Addon",
+  "settings": {
+    "enable_otp_on_edit": true
+  }
+}

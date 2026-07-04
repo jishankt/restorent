@@ -1,0 +1,59 @@
+{
+  "company_names": [
+    "Global"
+  ],
+  "fields": [
+    {
+      "id": "schedule_name",
+      "is_default": true,
+      "label": "Schedule Name",
+      "mandatory": true,
+      "type": "Data"
+    },
+    {
+      "id": "start_time",
+      "is_default": true,
+      "label": "Start Time",
+      "mandatory": true,
+      "type": "Time"
+    },
+    {
+      "id": "end_time",
+      "is_default": true,
+      "label": "End Time",
+      "mandatory": true,
+      "type": "Time"
+    },
+    {
+      "id": "is_overnight",
+      "is_default": true,
+      "label": "Overnight?",
+      "mandatory": false,
+      "type": "Check"
+    },
+    {
+      "id": "working_days",
+      "is_default": true,
+      "label": "Working Days",
+      "mandatory": true,
+      "options": [
+        "Mon",
+        "Tue",
+        "Wed",
+        "Thu",
+        "Fri",
+        "Sat",
+        "Sun"
+      ],
+      "type": "MultiSelect"
+    },
+    {
+      "id": "is_active",
+      "is_default": true,
+      "label": "Active",
+      "mandatory": false,
+      "type": "Check"
+    }
+  ],
+  "name": "Schedule Master"
+}

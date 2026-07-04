@@ -1,0 +1,26 @@
+{
+  "branch": "All Branches",
+  "branch_name": "All Branches",
+  "branch_names": [
+    "All Branches"
+  ],
+  "company_id": "883cb181-18f7-4212-9c08-1ce3c7539af3",
+  "company_names": [
+    "Global"
+  ],
+  "fields": [
+    {
+      "id": "item_name",
+      "idx": 0,
+      "is_default": true,
+      "label": "Ingredient & Nutrition",
+      "mandatory": true,
+      "type": "Select"
+    }
+  ],
+  "name": "Ingredient & Nutrition",
+  "settings": {
+    "enable_otp_on_edit": true
+  },
+  "tenant_id": "02e4488d-8ad9-4b9d-8a03-1031727e55e3"
+}

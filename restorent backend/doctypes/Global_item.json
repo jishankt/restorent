@@ -1,0 +1,152 @@
+{
+  "company_names": [
+    "Global"
+  ],
+  "fields": [
+    {
+      "id": "item_code",
+      "idx": 0,
+      "is_default": true,
+      "label": "Item Code1",
+      "mandatory": true,
+      "type": "Data"
+    },
+    {
+      "id": "item_name",
+      "idx": 1,
+      "is_default": true,
+      "label": "Item Name",
+      "mandatory": true,
+      "type": "Data"
+    },
+    {
+      "allow_create_new": true,
+      "hidden": false,
+      "id": "item_group",
+      "idx": 2,
+      "is_default": true,
+      "label": "Item Group",
+      "link_doctype": "Item Group",
+      "mandatory": true,
+      "type": "Table"
+    },
+    {
+      "hidden": false,
+      "id": "price_list_rate",
+      "idx": 3,
+      "is_default": true,
+      "label": "Price List Rate",
+      "mandatory": true,
+      "type": "Float"
+    },
+    {
+      "hidden": true,
+      "id": "tax_applicable",
+      "idx": 4,
+      "is_default": true,
+      "label": "Tax Applicable",
+      "mandatory": false,
+      "type": "Check"
+    },
+    {
+      "id": "tax_rate",
+      "idx": 5,
+      "is_default": true,
+      "label": "Tax Rate",
+      "mandatory": false,
+      "type": "Data",
+      "hidden": true
+    },
+    {
+      "id": "has_offer",
+      "idx": 6,
+      "is_default": true,
+      "label": "Enable Promotion",
+      "mandatory": false,
+      "type": "Check",
+      "hidden": true
+    },
+    {
+      "allow_create_new": false,
+      "id": "offer_price",
+      "idx": 7,
+      "is_default": true,
+      "label": "Promotional Price (\u00e2\u201a\u00b9)",
+      "mandatory": false,
+      "type": "Float",
+      "hidden": true
+    },
+    {
+      "id": "offer_start_time",
+      "idx": 8,
+      "is_default": true,
+      "label": "Offer Start Time",
+      "mandatory": false,
+      "type": "Date",
+      "hidden": true
+    },
+    {
+      "id": "offer_end_time",
+      "idx": 9,
+      "is_default": true,
+      "label": "Offer End Time",
+      "mandatory": false,
+      "type": "Date",
+      "hidden": true
+    },
+    {
+      "allow_create_new": true,
+      "hidden": false,
+      "id": "kitchen",
+      "idx": 10,
+      "is_default": true,
+      "label": "Kitchen",
+      "link_doctype": "Kitchen",
+      "mandatory": false,
+      "type": "Table"
+    },
+    {
+      "id": "image",
+      "idx": 11,
+      "is_default": true,
+      "label": "Image",
+      "mandatory": false,
+      "type": "Attach Image"
+    },
+    {
+      "hidden": false,
+      "id": "images",
+      "idx": 12,
+      "is_default": true,
+      "label": "Multiple Images",
+      "mandatory": false,
+      "type": "Attach Image"
+    },
+    {
+      "allow_create_new": true,
+      "hidden": false,
+      "id": "variant_table",
+      "idx": 13,
+      "is_default": true,
+      "label": "Variants",
+      "link_doctype": "Variant",
+      "mandatory": false,
+      "type": "Table"
+    },
+    {
+      "allow_create_new": true,
+      "hidden": false,
+      "id": "ingredients",
+      "idx": 14,
+      "is_default": true,
+      "label": "Ingredients",
+      "link_doctype": "Ingredient & Nutrition",
+      "mandatory": false,
+      "type": "Table"
+    }
+  ],
+  "name": "Item",
+  "settings": {
+    "enable_otp_on_edit": true
+  }
+}

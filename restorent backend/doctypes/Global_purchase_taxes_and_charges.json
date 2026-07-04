@@ -1,0 +1,50 @@
+{
+  "branch": "All Branches",
+  "branch_name": "All Branches",
+  "branch_names": [
+    "All Branches"
+  ],
+  "company_names": [
+    "Global"
+  ],
+  "fields": [
+    {
+      "hidden": false,
+      "id": "tax_template",
+      "idx": 0,
+      "is_default": true,
+      "label": "Tax Template",
+      "link_doctype": "Tax Master",
+      "mandatory": true,
+      "type": "Link"
+    },
+    {
+      "hidden": false,
+      "id": "tax_type",
+      "idx": 1,
+      "is_default": true,
+      "label": "Tax Type",
+      "mandatory": true,
+      "type": "Data"
+    },
+    {
+      "hidden": false,
+      "id": "tax_rate",
+      "idx": 2,
+      "is_default": true,
+      "label": "Rate (%)",
+      "mandatory": true,
+      "type": "Number"
+    },
+    {
+      "hidden": false,
+      "id": "tax_amount",
+      "idx": 3,
+      "is_default": true,
+      "label": "Amount",
+      "mandatory": true,
+      "type": "Number"
+    }
+  ],
+  "name": "Purchase Taxes and Charges"
+}

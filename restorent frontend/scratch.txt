@@ -1,0 +1,32 @@
+15:   total_price: 0,
+16:   offer_price: "",
+149:             let basePrice = 0;
+150:             if (type === 'Addon') basePrice = Number(comp.addon_price || comp.price || 0);
+151:             else if (type === 'Combo') basePrice = Number(comp.offer_price || comp.total_price || comp.price || 0);
+152:             else basePrice = Number(comp.price_list_rate || comp.price || 0);
+159:                  let cPrice = basePrice;
+160:                  if (comp.company_prices && comp.company_prices[cName] !== undefined) {
+161:                    cPrice = Number(comp.company_prices[cName]);
+167:                    price: cPrice,
+174:                    let bPrice = basePrice;
+175:                    if (comp.company_prices && comp.company_prices[cName] !== undefined) {
+176:                      bPrice = Number(comp.company_prices[cName]);
+178:                    if (comp.branch_prices && comp.branch_prices[bName] !== undefined) {
+179:                      bPrice = Number(comp.branch_prices[bName]);
+188:                        price: bPrice,
+201:                 price: basePrice
+295:     const price = it.price || 0;
+296:     const comp = { type: "item", data: it, price: Number(price) };
+299:     setFormData(prev => ({ ...prev, items: newItems, total_price: (prev.total_price || 0) + comp.price }));
+308:     setFormData(prev => ({ ...prev, items: newItems, total_price: (prev.total_price || 0) - (removed?.price || 0) }));
+356:         total_price: parseFloat(formData.total_price) || 0,
+357:         offer_price: parseFloat(formData.offer_price) || 0,
+478:                         <span style={{ fontWeight: '700', color: '#3b82f6', fontSize: '13px' }}>₹{Number(it.price || 0).toFixed(2)}</span>
+511:                     ₹{comp.price}
+523:             .filter(f => !['description', 'items', 'total_price', 'offer_price', 'offer_start_time', 'offer_end_time', 'images'].includes(f.id))
+563:             {!getFieldHidden("total_price") && (
+565:                 <label style={{ fontSize: '12px', fontWeight: '800' }}>{getFieldLabel("total_price", "TOTAL VALUE").toUpperCase()}</label>
+566:                 <input type="number" value={formData.total_price || 0} disabled style={{ width: '100%', padding: '12px', background: '#f1f5f9', borderRadius: '10px' }} />
+569:             {!getFieldHidden("offer_price") && (
+571:                 <label style={{ fontSize: '12px', fontWeight: '800', color: '#3b82f6' }}>{getFieldLabel("offer_price", "OFFER PRICE").toUpperCase()}</label>
+572:                 <input type="number" value={formData.offer_price || ""} onChange={(e) => setFormData({...formData, offer_price: e.target.value})} style={{ width: '100%', padding: '12px', border: '2px solid #3b82f6', borderRadius: '10px' }} />

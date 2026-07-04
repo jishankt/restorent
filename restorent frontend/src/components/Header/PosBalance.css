@@ -1,0 +1,337 @@
+/* src/components/Header/PosBalance.css */
+
+/* Global Reset & Fonts */
+:root {
+    --pb-bg-gradient: linear-gradient(135deg, #26abff, #eef6ff);
+    --pb-card-bg: #ffffff;
+    --pb-text-primary: #333;
+    --pb-text-secondary: #666;
+    --pb-primary-accent: #26abff;
+    --pb-green-accent: #38ef7d;
+    --pb-orange-accent: #ff7e5f;
+    --pb-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    --pb-hover-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+}
+
+/* Ensure body scrolling is allowed */
+body {
+    overflow-y: auto !important;
+}
+
+.pos-balance-container {
+    height: 100vh;
+    /* Changed from min-height to height to force container-level scrolling if needed */
+    width: 100%;
+    background: var(--pb-bg-gradient);
+    font-family: 'Poppins', sans-serif;
+    color: var(--pb-text-primary);
+    padding: 20px;
+    overflow-y: auto;
+    /* Force vertical scrollbar on the container */
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Scrollbar Styling for webkit browsers */
+.pos-balance-container::-webkit-scrollbar {
+    width: 10px;
+}
+
+.pos-balance-container::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.pos-balance-container::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+}
+
+/* Loading & Error States */
+.pos-balance-container.loading-state,
+.pos-balance-container.error-state {
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Navigation Back Button */
+.nav-icon-button {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    font-size: 1.2rem;
+    color: #333;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+    position: absolute;
+    top: 25px;
+    left: 25px;
+    z-index: 100;
+}
+
+.nav-icon-button:hover {
+    transform: scale(1.1);
+    background: #fff;
+    color: var(--pb-primary-accent);
+}
+
+/* Header Content */
+.header-row {
+    margin-top: 60px;
+    /* Space for absolute back button */
+}
+
+.page-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 5px;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.page-subtitle {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Glass/Card Styles */
+.glass-card {
+    background: var(--pb-card-bg);
+    border-radius: 20px;
+    box-shadow: var(--pb-shadow);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.glass-card:hover {
+    box-shadow: var(--pb-hover-shadow);
+}
+
+/* Filter Card Specifics */
+.filter-card .card-header-custom {
+    background: #f8f9fa;
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.filter-card .card-title-custom {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #444;
+}
+
+.filter-card .card-body-custom {
+    padding: 20px;
+}
+
+.filter-card label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.filter-card .form-control,
+.filter-card .form-select {
+    border-radius: 10px;
+    border: 1px solid #eee;
+    padding: 10px;
+    font-size: 0.95rem;
+    background: #f9f9f9;
+}
+
+.filter-card .form-control:focus,
+.filter-card .form-select:focus {
+    border-color: var(--pb-primary-accent);
+    box-shadow: 0 0 0 3px rgba(38, 171, 255, 0.1);
+    background: #fff;
+}
+
+.btn-reset {
+    background-color: #eee;
+    color: #555;
+    font-weight: 600;
+    border-radius: 10px;
+    padding: 10px;
+    transition: all 0.3s;
+}
+
+.btn-reset:hover {
+    background-color: #ddd;
+}
+
+/* Summary Card */
+.summary-card {
+    padding: 20px 30px;
+}
+
+.revenue-diplay {
+    display: flex;
+    flex-direction: column;
+}
+
+.revenue-diplay .label {
+    font-size: 0.9rem;
+    color: #888;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.revenue-diplay .value {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--pb-primary-accent);
+}
+
+.btn-primary-custom {
+    background: var(--pb-primary-accent);
+    color: #fff;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 30px;
+    font-weight: 600;
+    box-shadow: 0 4px 15px rgba(38, 171, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-primary-custom:hover {
+    background: #1a90e3;
+    transform: translateY(-2px);
+}
+
+/* Status Cards (Dine In, etc.) */
+.stat-card {
+    background: #fff;
+    border-radius: 18px;
+    padding: 20px;
+    box-shadow: var(--pb-shadow);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    height: 100%;
+}
+
+.stat-card .icon-wrapper {
+    width: 60px;
+    height: 60px;
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.icon-wrapper.dine-in {
+    background: linear-gradient(135deg, #ff9966, #ff5e62);
+}
+
+.icon-wrapper.delivery {
+    background: linear-gradient(135deg, #56ab2f, #a8e063);
+}
+
+.icon-wrapper.takeaway {
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+}
+
+.stat-card .stat-info h4 {
+    font-size: 1rem;
+    color: #777;
+    margin: 0;
+    font-weight: 600;
+}
+
+.stat-card .stat-info p {
+    font-size: 0.85rem;
+    color: #aaa;
+    margin: 3px 0;
+}
+
+.stat-card .stat-info h5 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #333;
+    margin: 0;
+}
+
+/* Analytics & Tables */
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #444;
+}
+
+.chart-container-wrapper {
+    height: 400px;
+    width: 100%;
+}
+
+.custom-table thead th {
+    background: #f1f8ff;
+    border: none;
+    color: #555;
+    font-weight: 600;
+    padding: 15px;
+}
+
+.custom-table tbody td {
+    padding: 15px;
+    vertical-align: middle;
+    border-bottom: 1px solid #f0f0f0;
+    color: #444;
+    font-weight: 500;
+}
+
+.custom-table tr:hover td {
+    background: #fcfcfc;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .page-title {
+        font-size: 2rem;
+    }
+
+    .revenue-diplay .value {
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .pos-balance-container {
+        padding: 15px;
+        height: auto;
+        min-height: 100vh;
+        overflow-y: visible;
+    }
+
+    .header-row {
+        margin-top: 50px;
+    }
+
+    .stat-card {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .stat-card .icon-wrapper {
+        margin-bottom: 10px;
+    }
+
+    .summary-card {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+}

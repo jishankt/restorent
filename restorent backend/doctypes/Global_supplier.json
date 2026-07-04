@@ -1,0 +1,224 @@
+{
+  "branch": "All Branches",
+  "branch_name": "All Branches",
+  "branch_names": [
+    "All Branches"
+  ],
+  "company_names": [
+    "Global"
+  ],
+  "fields": [
+    {
+      "hidden": false,
+      "id": "sec_supp_basic",
+      "idx": 0,
+      "is_default": true,
+      "label": "Basic Details",
+      "type": "Section Break"
+    },
+    {
+      "hidden": false,
+      "id": "company",
+      "idx": 1,
+      "is_default": true,
+      "label": "Company Name / Trade Name",
+      "mandatory": true,
+      "type": "Data"
+    },
+    {
+      "hidden": false,
+      "id": "code",
+      "idx": 2,
+      "is_default": true,
+      "label": "Supplier Code / Short Name",
+      "mandatory": false,
+      "type": "Data"
+    },
+    {
+      "hidden": false,
+      "id": "group",
+      "idx": 3,
+      "is_default": true,
+      "label": "Supplier group/Category",
+      "mandatory": true,
+      "type": "Select"
+    },
+    {
+      "hidden": false,
+      "id": "country",
+      "idx": 4,
+      "is_default": true,
+      "label": "Country",
+      "mandatory": false,
+      "type": "Select"
+    },
+    {
+      "hidden": false,
+      "id": "currency",
+      "idx": 5,
+      "is_default": true,
+      "label": "Default Currency",
+      "mandatory": true,
+      "type": "Select"
+    },
+    {
+      "hidden": false,
+      "id": "sec_supp_tax",
+      "idx": 6,
+      "is_default": true,
+      "label": "Tax Details",
+      "type": "Section Break"
+    },
+    {
+      "hidden": false,
+      "id": "taxId",
+      "idx": 7,
+      "is_default": true,
+      "label": "Tax ID / VAT / TRN",
+      "mandatory": false,
+      "type": "Data"
+    },
+    {
+      "hidden": false,
+      "id": "taxCategory",
+      "idx": 8,
+      "is_default": true,
+      "label": "Tax Category",
+      "mandatory": false,
+      "type": "Select"
+    },
+    {
+      "hidden": false,
+      "id": "taxWithholdingCategory",
+      "idx": 9,
+      "is_default": true,
+      "label": "Tax Withholding Category",
+      "mandatory": false,
+      "type": "Select"
+    },
+    {
+      "hidden": false,
+      "id": "sec_supp_contact",
+      "idx": 10,
+      "is_default": true,
+      "label": "Contact Details",
+      "type": "Section Break"
+    },
+    {
+      "hidden": false,
+      "id": "contacts",
+      "idx": 11,
+      "is_default": true,
+      "label": "Supplier Contacts",
+      "mandatory": false,
+      "type": "Table"
+    },
+    {
+      "hidden": false,
+      "id": "sec_supp_payment",
+      "idx": 12,
+      "is_default": true,
+      "label": "Payment & Bank Details",
+      "type": "Section Break"
+    },
+    {
+      "hidden": false,
+      "id": "paymentMode",
+      "idx": 13,
+      "is_default": true,
+      "label": "Preferred Payment Mode",
+      "mandatory": false,
+      "type": "Select"
+    },
+    {
+      "hidden": false,
+      "id": "paymentTerms",
+      "idx": 14,
+      "is_default": true,
+      "label": "Payment Terms",
+      "mandatory": false,
+      "type": "Select"
+    },
+    {
+      "hidden": false,
+      "id": "creditLimit",
+      "idx": 15,
+      "is_default": true,
+      "label": "Credit Limit",
+      "mandatory": false,
+      "type": "Number"
+    },
+    {
+      "hidden": false,
+      "id": "paymentTermsOverride",
+      "idx": 16,
+      "is_default": true,
+      "label": "Payment Terms Override",
+      "mandatory": false,
+      "type": "Data"
+    },
+    {
+      "hidden": false,
+      "id": "bankDetails",
+      "idx": 17,
+      "is_default": true,
+      "label": "Bank Details (Account No., IBAN, SWIFT)",
+      "mandatory": false,
+      "type": "Data"
+    },
+    {
+      "hidden": false,
+      "id": "sec_supp_additional",
+      "idx": 18,
+      "is_default": true,
+      "label": "Additional Information",
+      "type": "Section Break"
+    },
+    {
+      "hidden": false,
+      "id": "website",
+      "idx": 19,
+      "is_default": true,
+      "label": "Website",
+      "mandatory": false,
+      "type": "Data"
+    },
+    {
+      "hidden": false,
+      "id": "onTimeDelivery",
+      "idx": 20,
+      "is_default": true,
+      "label": "On-Time Delivery %",
+      "mandatory": false,
+      "type": "Number"
+    },
+    {
+      "hidden": false,
+      "id": "defectRate",
+      "idx": 21,
+      "is_default": true,
+      "label": "Defect Rate %",
+      "mandatory": false,
+      "type": "Number"
+    },
+    {
+      "hidden": false,
+      "id": "lastPurchaseDate",
+      "idx": 22,
+      "is_default": true,
+      "label": "Last Purchase Date",
+      "mandatory": false,
+      "type": "Date"
+    },
+    {
+      "hidden": false,
+      "id": "lastPurchaseValue",
+      "idx": 23,
+      "is_default": true,
+      "label": "Last Purchase Value",
+      "mandatory": false,
+      "type": "Number"
+    }
+  ],
+  "name": "Supplier"
+}

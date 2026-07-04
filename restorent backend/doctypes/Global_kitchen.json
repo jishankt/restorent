@@ -1,0 +1,20 @@
+{
+  "company_names": [
+    "Global"
+  ],
+  "fields": [
+    {
+      "allow_create_new": true,
+      "id": "kitchen_name",
+      "idx": 0,
+      "is_default": true,
+      "label": "Kitchen",
+      "mandatory": true,
+      "type": "Data"
+    }
+  ],
+  "name": "Kitchen",
+  "settings": {
+    "enable_otp_on_edit": false
+  }
+}

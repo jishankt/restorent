@@ -1,0 +1,365 @@
+{
+  "company_names": [
+    "Global"
+  ],
+  "fields": [
+    {
+      "hidden": false,
+      "id": "basic_details_1779956501007910",
+      "idx": 0,
+      "label": "Basic Details",
+      "mandatory": false,
+      "type": "Section Break"
+    },
+    {
+      "id": "name",
+      "idx": 1,
+      "is_default": true,
+      "label": "Full Name",
+      "mandatory": true,
+      "type": "Data"
+    },
+    {
+      "id": "employee_id",
+      "idx": 2,
+      "is_default": true,
+      "label": "Employee ID",
+      "mandatory": true,
+      "type": "Data"
+    },
+    {
+      "id": "phone_number",
+      "idx": 3,
+      "is_default": true,
+      "label": "Phone Number",
+      "mandatory": true,
+      "type": "Number"
+    },
+    {
+      "id": "email",
+      "idx": 4,
+      "is_default": true,
+      "label": "Email",
+      "mandatory": true,
+      "type": "Data"
+    },
+    {
+      "hidden": false,
+      "id": "status",
+      "idx": 5,
+      "is_default": true,
+      "label": "Status",
+      "mandatory": false,
+      "options": [
+        "Active",
+        "Inactive"
+      ],
+      "type": "Select"
+    },
+    {
+      "id": "profile_image",
+      "idx": 6,
+      "is_default": true,
+      "label": "Profile Image",
+      "mandatory": false,
+      "type": "Attach Image"
+    },
+    {
+      "hidden": false,
+      "id": "personal_info_1779956501007138",
+      "idx": 7,
+      "label": "Personal Info",
+      "mandatory": false,
+      "type": "Section Break"
+    },
+    {
+      "id": "gender",
+      "idx": 8,
+      "is_default": true,
+      "label": "Gender",
+      "mandatory": false,
+      "options": [
+        "Male",
+        "Female",
+        "Other"
+      ],
+      "type": "Select"
+    },
+    {
+      "id": "date_of_birth",
+      "idx": 9,
+      "is_default": true,
+      "label": "Date of Birth",
+      "mandatory": false,
+      "type": "Date"
+    },
+    {
+      "id": "salutation",
+      "idx": 10,
+      "is_default": true,
+      "label": "Salutation",
+      "mandatory": false,
+      "options": [
+        "Mr.",
+        "Ms.",
+        "Mrs.",
+        "Dr.",
+        "Prof."
+      ],
+      "type": "Select"
+    },
+    {
+      "id": "marital_status",
+      "idx": 11,
+      "is_default": true,
+      "label": "Marital Status",
+      "mandatory": false,
+      "options": [
+        "Single",
+        "Married",
+        "Divorced",
+        "Widowed"
+      ],
+      "type": "Select"
+    },
+    {
+      "id": "id_number",
+      "idx": 12,
+      "is_default": true,
+      "label": "ID Number",
+      "mandatory": false,
+      "type": "Data"
+    },
+    {
+      "id": "id_expiry",
+      "idx": 13,
+      "is_default": true,
+      "label": "ID Expiry",
+      "mandatory": false,
+      "type": "Date"
+    },
+    {
+      "id": "address",
+      "idx": 14,
+      "is_default": true,
+      "label": "Address",
+      "mandatory": true,
+      "type": "Text"
+    },
+    {
+      "id": "nationality",
+      "idx": 15,
+      "is_default": true,
+      "label": "Nationality",
+      "mandatory": false,
+      "type": "Data"
+    },
+    {
+      "hidden": false,
+      "id": "employment_1779956501007767",
+      "idx": 16,
+      "label": "Employment",
+      "mandatory": false,
+      "type": "Section Break"
+    },
+    {
+      "id": "date_of_joining",
+      "idx": 17,
+      "is_default": true,
+      "label": "Date of Joining",
+      "mandatory": true,
+      "type": "Date"
+    },
+    {
+      "id": "employee_designation",
+      "idx": 18,
+      "is_default": true,
+      "label": "Designation",
+      "link_doctype": "Employee Designation",
+      "mandatory": true,
+      "type": "Table"
+    },
+    {
+      "id": "employee_type",
+      "idx": 19,
+      "is_default": true,
+      "label": "Employee Type",
+      "link_doctype": "Employee Type",
+      "mandatory": true,
+      "type": "Table"
+    },
+    {
+      "id": "department",
+      "idx": 20,
+      "is_default": true,
+      "label": "Department",
+      "link_doctype": "Employee Department",
+      "mandatory": true,
+      "type": "Table"
+    },
+    {
+      "hidden": false,
+      "id": "salary_1779956501007462",
+      "idx": 21,
+      "label": "Salary",
+      "mandatory": false,
+      "type": "Section Break"
+    },
+    {
+      "id": "basic_salary",
+      "idx": 22,
+      "is_default": true,
+      "label": "Basic Salary",
+      "mandatory": false,
+      "type": "Number"
+    },
+    {
+      "id": "hra",
+      "idx": 23,
+      "is_default": true,
+      "label": "HRA",
+      "mandatory": false,
+      "type": "Number"
+    },
+    {
+      "id": "ta",
+      "idx": 24,
+      "is_default": true,
+      "label": "TA",
+      "mandatory": false,
+      "type": "Number"
+    },
+    {
+      "id": "oa",
+      "idx": 25,
+      "is_default": true,
+      "label": "OA",
+      "mandatory": false,
+      "type": "Number"
+    },
+    {
+      "id": "total_salary",
+      "idx": 26,
+      "is_default": true,
+      "label": "Total Salary",
+      "mandatory": false,
+      "type": "Number"
+    },
+    {
+      "hidden": false,
+      "id": "professional_177995650100717",
+      "idx": 27,
+      "label": "Professional",
+      "mandatory": false,
+      "type": "Section Break"
+    },
+    {
+      "id": "education",
+      "idx": 28,
+      "is_default": true,
+      "label": "Education",
+      "mandatory": false,
+      "type": "Data"
+    },
+    {
+      "id": "previous_experience",
+      "idx": 29,
+      "is_default": true,
+      "label": "Previous Experience",
+      "mandatory": false,
+      "type": "Text"
+    },
+    {
+      "id": "skills",
+      "idx": 30,
+      "is_default": true,
+      "label": "Skills",
+      "mandatory": false,
+      "type": "Text"
+    },
+    {
+      "hidden": false,
+      "id": "other_details_1779956501007806",
+      "idx": 31,
+      "label": "Other Details",
+      "mandatory": false,
+      "type": "Section Break"
+    },
+    {
+      "id": "bank_name",
+      "idx": 32,
+      "is_default": true,
+      "label": "Bank Name",
+      "mandatory": false,
+      "type": "Data"
+    },
+    {
+      "id": "account_holder_name",
+      "idx": 33,
+      "is_default": true,
+      "label": "Account Holder Name",
+      "mandatory": false,
+      "type": "Data"
+    },
+    {
+      "id": "account_number",
+      "idx": 34,
+      "is_default": true,
+      "label": "Account Number",
+      "mandatory": false,
+      "type": "Data"
+    },
+    {
+      "id": "branch_code",
+      "idx": 35,
+      "is_default": true,
+      "label": "Branch Code",
+      "mandatory": false,
+      "type": "Data"
+    },
+    {
+      "id": "health_info",
+      "idx": 36,
+      "is_default": true,
+      "label": "Health Info",
+      "mandatory": false,
+      "type": "Text"
+    },
+    {
+      "id": "family_details",
+      "idx": 37,
+      "is_default": true,
+      "label": "Family Details",
+      "mandatory": false,
+      "type": "Text"
+    },
+    {
+      "hidden": false,
+      "id": "credentials_1779956501007984",
+      "idx": 38,
+      "label": "Credentials",
+      "mandatory": false,
+      "type": "Section Break"
+    },
+    {
+      "id": "username",
+      "idx": 39,
+      "is_default": true,
+      "label": "Username",
+      "mandatory": true,
+      "type": "Data"
+    },
+    {
+      "id": "password",
+      "idx": 40,
+      "is_default": true,
+      "label": "Password",
+      "mandatory": true,
+      "type": "Password"
+    }
+  ],
+  "name": "Employee",
+  "settings": {
+    "enable_otp_on_edit": false
+  }
+}

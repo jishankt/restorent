@@ -1,0 +1,607 @@
+/* Main container with gradient background matching Sales Page */
+.sales-report-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #ffffff 0%, #3498db 100%);
+  padding-bottom: 50px;
+}
+
+/* Back button and action buttons */
+.back-btn {
+  border-radius: 50px !important;
+  padding: 8px 20px !important;
+  font-size: 16px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+.back-btn:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Filter Section Grid */
+.filter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.5rem;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 25px;
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.1);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  margin-bottom: 2rem !important;
+  position: relative;
+  z-index: 5;
+}
+
+.filter-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filter-item label {
+  font-size: 0.9rem;
+  color: #2c3e50;
+  margin-bottom: 2px;
+}
+
+.filter-item select,
+.filter-item input {
+  border-radius: 10px !important;
+  border: 1px solid #dee2e6 !important;
+  padding: 10px !important;
+  transition: border-color 0.2s;
+}
+
+.filter-item select:focus,
+.filter-item input:focus {
+  border-color: #3498db !important;
+  box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25) !important;
+}
+
+/* Item Dropdown */
+.item-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border: 1px solid #3498db;
+  border-radius: 10px;
+  max-height: 250px;
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.item-option {
+  padding: 12px 15px;
+  cursor: pointer;
+  color: #333;
+  transition: all 0.2s;
+}
+
+.item-option:hover {
+  background-color: #f1f8ff;
+  color: #3498db;
+}
+
+/* Multi-select Checkbox Dropdown Styling */
+.checkbox-dropdown-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.checkbox-dropdown-header {
+  background: #ffffff;
+  padding: 8px 12px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 42px;
+  border-radius: 10px;
+  border: 1px solid #3498db !important;
+  color: #000000;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.checkbox-dropdown-header.open {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-color: #3498db !important;
+  box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+}
+
+.selected-labels-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  max-width: 90%;
+}
+
+.summary-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: #3498db;
+}
+
+.placeholder-text {
+  color: #6c757d;
+  font-size: 14px;
+}
+
+.dropdown-arrow {
+  font-size: 10px;
+  color: #3498db;
+  transition: transform 0.3s ease;
+}
+
+.checkbox-dropdown-header.open .dropdown-arrow {
+  transform: rotate(180deg);
+}
+
+.checkbox-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border: 1px solid #3498db;
+  border-top: none;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  max-height: 250px;
+  z-index: 1100;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.options-list {
+  overflow-y: auto;
+  padding: 5px 0;
+}
+
+.option-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.option-item:hover {
+  background-color: rgba(52, 152, 219, 0.05);
+}
+
+.option-item.selected {
+  background-color: rgba(52, 152, 219, 0.1);
+}
+
+.option-item .form-check {
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+
+.option-item .form-check-input {
+  margin-top: 0;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.option-item .form-check-label {
+  cursor: pointer;
+  width: 100%;
+  padding-left: 8px;
+  color: #000000;
+}
+
+/* Table Styling */
+.sales-card {
+  border: none !important;
+  border-radius: 20px !important;
+  background: #ffffff !important;
+  overflow: visible !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05) !important;
+  z-index: 1;
+}
+
+.table-header th {
+  background: #3498db !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  font-size: 0.85rem !important;
+  letter-spacing: 0.5px !important;
+  padding: 18px 15px !important;
+  border: none !important;
+}
+
+.sales-table tbody tr td {
+  padding: 15px !important;
+  vertical-align: middle !important;
+  color: #444 !important;
+  border-bottom: 1px solid #f0f0f0 !important;
+}
+
+.sales-table tbody tr:last-child td {
+  border-bottom: none !important;
+}
+
+/* Summary Box for Screen */
+.summary-print-container {
+  margin-top: 20px;
+  background: #f8fbff;
+  border-radius: 15px;
+  padding: 20px;
+  border: 1px solid #eef2f7;
+}
+
+.summary-print-row {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 20px;
+  padding: 10px 0;
+  color: #3498db;
+  font-size: 1.1rem;
+}
+
+.summary-label {
+  flex: 1;
+  text-align: right;
+  font-weight: bold;
+}
+
+.summary-value {
+  width: 120px;
+  text-align: right;
+}
+
+/* Custom alignment for total columns */
+.text-end {
+  text-align: right !important;
+}
+
+/* Print Optimization */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  body,
+  html {
+    background: #ffffff !important;
+    color: #000000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    height: auto !important;
+  }
+
+  .sales-report-container {
+    background: #ffffff !important;
+    min-height: auto !important;
+    padding: 10px !important;
+    display: block !important;
+  }
+
+  .sales-card {
+    box-shadow: none !important;
+    border: none !important;
+    background: #ffffff !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    overflow: visible !important;
+  }
+
+  .card-body {
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+
+  /* Force table to show all content without scrollbars */
+  .table-wrapper {
+    display: block !important;
+    width: 100% !important;
+    overflow: visible !important;
+  }
+
+  .sales-table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    margin-bottom: 0 !important;
+    table-layout: auto !important;
+  }
+
+  .table-header th {
+    background-color: #e0e0e0 !important;
+    /* Light gray for headers in B&W */
+    color: #000000 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    border: 1px solid #000000 !important;
+    padding: 8px 4px !important;
+    font-size: 10pt !important;
+  }
+
+  .sales-table tbody tr td {
+    border: 1px solid #000000 !important;
+    color: #000000 !important;
+    padding: 6px 4px !important;
+    font-size: 9pt !important;
+    background: transparent !important;
+  }
+
+  /* Summary Section for B&W Print */
+  .summary-print-container {
+    background: transparent !important;
+    border: 1px solid #000 !important;
+    border-top: none !important;
+    margin-top: 0 !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+  }
+
+  .summary-print-row {
+    color: #000000 !important;
+    border-bottom: 1px solid #000 !important;
+    padding: 8px 4px !important;
+    font-size: 10pt !important;
+    display: flex !important;
+    justify-content: flex-end !important;
+    gap: 0 !important;
+  }
+
+  .summary-print-row:last-child {
+    border-bottom: none !important;
+  }
+
+  .summary-label {
+    padding-right: 15px !important;
+  }
+
+  .summary-value {
+    width: 100px !important;
+    /* Matches proportional table columns */
+    border-left: 1px solid #000 !important;
+    padding-right: 4px !important;
+  }
+
+  .print-header {
+    display: block !important;
+    text-align: center !important;
+    margin-bottom: 20px !important;
+  }
+
+  .print-logo {
+    max-height: 80px !important;
+    width: auto !important;
+    display: block !important;
+    margin: 0 auto 15px !important;
+    filter: none !important;
+    /* Ensure logo is original or B&W depending on file */
+  }
+
+  .print-header h2 {
+    font-size: 16pt !important;
+    margin-bottom: 5px !important;
+  }
+
+  .print-header p {
+    font-size: 9pt !important;
+    margin: 2px 0 !important;
+  }
+
+  /* Black and white specifics */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
+
+/* DatePicker Popper Fix */
+.react-datepicker-popper {
+  z-index: 99999 !important;
+}
+
+/* Portal styling */
+#datepicker-portal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 99999;
+  pointer-events: none;
+}
+
+#datepicker-portal>* {
+  pointer-events: auto;
+}
+
+/* Kanban Board Refinement */
+.kanban-board-container {
+  width: 100%;
+  padding: 10px 0;
+  margin-top: 20px;
+}
+
+.kanban-board {
+  display: flex;
+  gap: 25px;
+  flex-wrap: wrap;
+  /* Allow columns to wrap if many, or grow if few */
+  justify-content: center;
+  padding-bottom: 20px;
+}
+
+.kanban-column {
+  flex: 1;
+  /* Grow to fill space */
+  min-width: 350px;
+  /* Minimum width for a professional look */
+  max-width: 100%;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  min-height: 600px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.kanban-column-header {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #1e3c72;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 3px solid #1e3c72;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* GRID LAYOUT FOR CARDS: Up to 5 columns per header if space allows */
+.kanban-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 15px;
+  align-content: start;
+}
+
+.kanban-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  border-top: 6px solid #2a5298;
+  /* Top border for a modern grid look */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.kanban-card:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+}
+
+.kanban-card-invoice {
+  font-weight: 800;
+  color: #2c3e50;
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 5px;
+}
+
+.kanban-card-details {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 15px;
+}
+
+.kanban-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+}
+
+.kanban-card-payment {
+  font-size: 0.8rem;
+  background: #f0f4f8;
+  padding: 4px 10px;
+  border-radius: 6px;
+  color: #2a5298;
+  font-weight: 700;
+}
+
+.kanban-card-total {
+  font-weight: 800;
+  color: #1e3c72;
+  font-size: 1.2rem;
+}
+
+.kanban-empty {
+  grid-column: 1 / -1;
+  /* Fill the grid row */
+  text-align: center;
+  color: #999;
+  font-style: italic;
+  padding: 40px;
+  font-size: 1.1rem;
+}
+
+/* --- Expanded Responsive Media Queries --- */
+
+/* Small Laptop (769px – 1024px) */
+@media (max-width: 1024px) {
+  .filter-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .kanban-column {
+    min-width: 300px;
+  }
+}
+
+/* Tablet (481px – 768px) */
+@media (max-width: 768px) {
+  .filter-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .sales-card .card-body {
+    padding: 15px;
+  }
+
+  .sales-table {
+    display: block;
+    overflow-x: auto;
+  }
+
+  .kanban-column {
+    min-width: 100%;
+    min-height: auto;
+  }
+}
+
+/* Mobile (320px – 480px) */
+@media (max-width: 480px) {
+  .sales-report-container {
+    padding: 10px;
+  }
+
+  .filter-grid {
+    grid-template-columns: 1fr;
+    padding: 15px;
+  }
+
+  .summary-print-row {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 5px;
+  }
+
+  .summary-label {
+    text-align: right;
+  }
+
+  .kanban-cards {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "name": "Attendance",
+  "company_names": [
+    "Global"
+  ],
+  "settings": {
+    "enable_otp_on_edit": false
+  },
+  "fields": [
+    {
+      "id": "employee",
+      "label": "Employee",
+      "type": "Table",
+      "link_doctype": "Employee",
+      "mandatory": true,
+      "is_default": true
+    },
+    {
+      "id": "date",
+      "label": "Date",
+      "type": "Date",
+      "mandatory": true,
+      "is_default": true
+    },
+    {
+      "id": "status",
+      "label": "Status",
+      "type": "Select",
+      "options": [
+        "Present",
+        "Absent",
+        "Half Day",
+        "Leave",
+        "Weekly Off",
+        "Holiday"
+      ],
+      "mandatory": true,
+      "is_default": true
+    },
+    {
+      "id": "clock_in",
+      "label": "Clock In",
+      "type": "Time",
+      "mandatory": false,
+      "is_default": true
+    },
+    {
+      "id": "clock_out",
+      "label": "Clock Out",
+      "type": "Time",
+      "mandatory": false,
+      "is_default": true
+    }
+  ]
+}

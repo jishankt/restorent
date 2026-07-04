@@ -1,0 +1,36 @@
+{
+  "branch": "All Branches",
+  "branch_name": "All Branches",
+  "branch_names": [
+    "All Branches"
+  ],
+  "company_id": "883cb181-18f7-4212-9c08-1ce3c7539af3",
+  "company_names": [
+    "Global"
+  ],
+  "fields": [
+    {
+      "hidden": false,
+      "id": "predefined_variants",
+      "idx": 0,
+      "is_default": false,
+      "label": "Predefined Variants",
+      "mandatory": false,
+      "type": "Check"
+    },
+    {
+      "hidden": false,
+      "id": "custom_variant",
+      "idx": 1,
+      "is_default": false,
+      "label": "Custom Variants",
+      "mandatory": false,
+      "type": "Check"
+    }
+  ],
+  "name": "Variant",
+  "settings": {
+    "enable_otp_on_edit": true
+  },
+  "tenant_id": "02e4488d-8ad9-4b9d-8a03-1031727e55e3"
+}

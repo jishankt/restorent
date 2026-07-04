@@ -1,0 +1,91 @@
+{
+  "name": "Purchase Invoice Report",
+  "company_names": [
+    "Global"
+  ],
+  "fields": [
+    {
+      "id": "series",
+      "label": "PI Number",
+      "type": "Data",
+      "mandatory": true,
+      "is_default": true,
+      "hidden": false,
+      "idx": 0
+    },
+    {
+      "id": "date",
+      "label": "Date",
+      "type": "Date",
+      "mandatory": true,
+      "is_default": true,
+      "hidden": false,
+      "idx": 1
+    },
+    {
+      "id": "supplierId",
+      "label": "Supplier Name",
+      "type": "Data",
+      "mandatory": true,
+      "is_default": true,
+      "hidden": false,
+      "idx": 2
+    },
+    {
+      "id": "poId",
+      "label": "PO Reference",
+      "type": "Data",
+      "mandatory": false,
+      "is_default": true,
+      "hidden": false,
+      "idx": 3
+    },
+    {
+      "id": "prId",
+      "label": "PR Reference",
+      "type": "Data",
+      "mandatory": false,
+      "is_default": true,
+      "hidden": false,
+      "idx": 4
+    },
+    {
+      "id": "totalTaxes",
+      "label": "Taxes",
+      "type": "Number",
+      "mandatory": false,
+      "is_default": true,
+      "hidden": false,
+      "idx": 5
+    },
+    {
+      "id": "grandTotal",
+      "label": "Grand Total",
+      "type": "Number",
+      "mandatory": false,
+      "is_default": true,
+      "hidden": false,
+      "idx": 6
+    },
+    {
+      "id": "status",
+      "label": "Status",
+      "type": "Data",
+      "mandatory": false,
+      "is_default": true,
+      "hidden": false,
+      "idx": 7
+    },
+    {
+      "id": "actions",
+      "label": "Actions",
+      "type": "Data",
+      "mandatory": false,
+      "is_default": true,
+      "hidden": false,
+      "idx": 8
+    }
+  ],
+  "company_name": "All",
+  "company": "All"
+}

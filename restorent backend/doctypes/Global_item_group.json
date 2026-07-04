@@ -1,0 +1,45 @@
+{
+  "branch": "All Branches",
+  "branch_name": "All Branches",
+  "branch_names": [
+    "All Branches"
+  ],
+  "company_id": "883cb181-18f7-4212-9c08-1ce3c7539af3",
+  "company_names": [
+    "Global"
+  ],
+  "fields": [
+    {
+      "allow_create_new": true,
+      "id": "group_name",
+      "idx": 0,
+      "is_default": true,
+      "label": "Group Name",
+      "mandatory": true,
+      "type": "Data"
+    },
+    {
+      "hidden": true,
+      "id": "branch_name",
+      "idx": 1,
+      "is_default": true,
+      "label": "Branch Name",
+      "mandatory": false,
+      "type": "Select"
+    },
+    {
+      "hidden": true,
+      "id": "company_name",
+      "idx": 2,
+      "is_default": true,
+      "label": "Company Name",
+      "mandatory": false,
+      "type": "Select"
+    }
+  ],
+  "name": "Item Group",
+  "settings": {
+    "enable_otp_on_edit": true
+  },
+  "tenant_id": "02e4488d-8ad9-4b9d-8a03-1031727e55e3"
+}

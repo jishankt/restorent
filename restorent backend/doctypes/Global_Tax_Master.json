@@ -1,0 +1,52 @@
+{
+  "branch": "All Branches",
+  "branch_name": "All Branches",
+  "branch_names": [
+    "All Branches"
+  ],
+  "company_names": [
+    "Global"
+  ],
+  "fields": [
+    {
+      "hidden": false,
+      "id": "tax_name",
+      "idx": 0,
+      "is_default": true,
+      "label": "Tax Name",
+      "mandatory": true,
+      "type": "Data"
+    },
+    {
+      "hidden": false,
+      "id": "tax_type",
+      "idx": 1,
+      "is_default": true,
+      "label": "Tax Type",
+      "mandatory": true,
+      "options": "VAT\nGST\nExcise Duty\nOther",
+      "type": "Select",
+      "allow_create_new": false,
+      "link_doctype": "manoj"
+    },
+    {
+      "hidden": false,
+      "id": "tax_rate",
+      "idx": 2,
+      "is_default": true,
+      "label": "Tax Rate (%)",
+      "mandatory": true,
+      "type": "Number"
+    },
+    {
+      "hidden": false,
+      "id": "is_active",
+      "idx": 3,
+      "is_default": true,
+      "label": "Is Active",
+      "mandatory": false,
+      "type": "Check"
+    }
+  ],
+  "name": "Tax Master"
+}

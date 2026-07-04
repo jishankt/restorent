@@ -1,0 +1,1119 @@
+﻿diff --git a/src/components/Form/CustomerListPage.jsx b/src/components/Form/CustomerListPage.jsx
+index a274b96..b4d60ac 100644
+--- a/src/components/Form/CustomerListPage.jsx
++++ b/src/components/Form/CustomerListPage.jsx
+@@ -376,1066 +376,6 @@ const SearchableSelect = ({ options = [], value = '', onChange, placeholder, all
+           ) : (
+             !allowCreateNew && <li className="no-options">No matching options</li>
+           )}
+-        </ul>
+-      )}
+-    </div>
+-  );
+-};
+-// Column Filter Component (Searchable Dropdown for Filters)
+-const ColumnFilterInput = ({ col, customerList, value, onChange }) => {
+-  const options = useMemo(() => {
+-    const vals = customerList.map(c => {
+-      const val = c[col.id];
+-      if (val === null || val === undefined || val === 'N/A' || val === '') return null;
+-      return String(val).trim();
+-    }).filter(Boolean);
+-    return [...new Set(vals)].sort();
+-  }, [customerList, col.id]);
+-
+-  const inputType = col.type === 'Date' ? 'date' : 
+-                    (['Phone', 'Int', 'Currency'].includes(col.type)) ? 'number' : 
+-                    'text';
+-
+-  return (
+-    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+-      <label style={{ 
+-        fontSize: '12px', 
+-        color: '#475569', 
+-        fontWeight: '700', 
+-        textTransform: 'uppercase', 
+-        letterSpacing: '0.05em',
+-        paddingLeft: '4px'
+-      }}>
+-        {col.label}
+-      </label>
+-      <SearchableSelect
+-        value={value}
+-        onChange={onChange}
+-        options={options}
+-        placeholder={`Filter ${col.label}...`}
+-        className="premium-filter-select"
+-        type={inputType}
+-      />
+-    </div>
+-  );
+-};
+-
+-// Error Boundary Component
+-class ErrorBoundary extends React.Component {
+-  constructor(props) {
+-    super(props);
+-    this.state = { hasError: false, error: null };
+-  }
+-  static getDerivedStateFromError(error) {
+-    return { hasError: true, error };
+-  }
+-  componentDidCatch(error, errorInfo) {
+-    console.error('ErrorBoundary caught an error:', error, errorInfo);
+-  }
+-  render() {
+-    if (this.state.hasError) {
+-      return (
+-        <div style={{
+-          backgroundColor: '#f8d7da',
+-          color: '#721c24',
+-          padding: '15px 20px',
+-          borderRadius: '8px',
+-          maxWidth: '600px',
+-          margin: '20px auto',
+-          textAlign: 'center'
+-        }}>
+-          <p>Something went wrong: {this.state.error?.message}</p>
+-          <button
+-            style={{
+-              padding: '8px 16px',
+-              backgroundColor: '#dc3545',
+-              color: '#ffffff',
+-              border: 'none',
+-              borderRadius: '8px',
+-              cursor: 'pointer'
+-            }}
+-            onClick={() => window.location.reload()}
+-          >
+-            Reload Page
+-          </button>
+-        </div>
+-      );
+-    }
+-    return this.props.children;
+-  }
+-}
+-const CustomerListPage = () => {
+-  const [customerList, setCustomerList] = useState([]);
+-  const [filteredCustomers, setFilteredCustomers] = useState([]);
+-  const [loading, setLoading] = useState(true);
+-  const [error, setError] = useState(null);
+-
+-  const [searchTerm, setSearchTerm] = useState("");
+-  const [columnFilters, setColumnFilters] = useState({});
+-  const [warningMessage, setWarningMessage] = useState("");
+-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+-  const [customerToDelete, setCustomerToDelete] = useState(null);
+-  const [customerGroups, setCustomerGroups] = useState([]);
+-  const [addressStructure, setAddressStructure] = useState({ countries: countryAddressHierarchy });
+-  const [linkedValues, setLinkedValues] = useState({});
+-
+-  const { baseUrl, configLoading, getHeaders } = useContext(UserContext);
+-  // Permissions & Loading States
+-  const [canRead, setCanRead] = useState(false);
+-  const [canWrite, setCanWrite] = useState(false);
+-  const [canDelete, setCanDelete] = useState(false);
+-  const [permsLoading, setPermsLoading] = useState(true);
+-  const [showPermModal, setShowPermModal] = useState(false);
+-  const [permModalMsg, setPermModalMsg] = useState("");
+-  
+-  // Dynamic DocType State
+-  const [doctypeFields, setDoctypeFields] = useState([]);
+-  const [showViewModal, setShowViewModal] = useState(false);
+-  const [viewCustomer, setViewCustomer] = useState(null);
+-  const [tableOptions, setTableOptions] = useState({});
+-
+-  // Dynamic Address State
+-
+-  // Filter states for dynamic fields
+-  const [filterCountry, setFilterCountry] = useState("");
+-  const [filterField1, setFilterField1] = useState("");
+-  const [filterField2, setFilterField2] = useState("");
+-  const [filterField3, setFilterField3] = useState("");
+-  
+-  // Advanced Features: Column Management & Multi-Tenant Filter
+-   const [filterCompanyName, setFilterCompanyName] = useState("");
+-   const [companyOptions, setCompanyOptions] = useState([]);
+-    const [filterBranchName, setFilterBranchName] = useState("");
+-    const [branchOptions, setBranchOptions] = useState([]);
+-    const [showManageColumns, setShowManageColumns] = useState(false);
+-    const [addressDoctypeFields, setAddressDoctypeFields] = useState([]);
+-   const [visibleColumns, setVisibleColumns] = useState(() => {
+-     const saved = localStorage.getItem('customer_list_visible_columns');
+-     return saved ? JSON.parse(saved) : {
+-       'customer_name': true,
+-       'phone_number': true,
+-       'customer_group': true,
+-       'country': true,
+-       'field1': true,
+-       'field2': true,
+-       'field3': true
+-     };
+-   });
+-
+-   const sortedAddressFieldIds = useMemo(() => {
+-    if (addressDoctypeFields.length > 0) {
+-      return addressDoctypeFields
+-        .map(f => f.id)
+-        .filter(id => id.toLowerCase().includes('field') && id.toLowerCase().includes('label'))
+-        .map(id => id.toLowerCase().replace('_label', '').replace('label', '').replace('_', ''))
+-        .sort((a, b) => parseInt(a.replace('field', '')) - parseInt(b.replace('field', '')));
+-    }
+-    return ['field1', 'field2', 'field3'];
+-   }, [addressDoctypeFields]);
+-
+-    const allColumns = useMemo(() => {
+-      const cols = [];
+-      
+-      // 1. Dynamic Address/Country Handling
+-      const hasAddress = doctypeFields.some(f => f.id === 'address');
+-      if (hasAddress) {
+-        cols.push({ id: 'country', label: 'Country Name', path: 'country' });
+-        cols.push({ id: 'address', label: 'Adress & Details', path: 'full_address' });
+-      }
+-
+-      // 2. Map fields from DocType
+-      doctypeFields.forEach(f => {
+-        if (['Section Break', 'Column Break', 'HTML', 'Button'].includes(f.type)) return;
+-        if (f.id === 'address') {
+-          sortedAddressFieldIds.forEach(fid => {
+-            const firstCountry = filterCountry || Object.keys(addressStructure.countries)[0];
+-            const labels = getAddressLabels(firstCountry, addressStructure, addressDoctypeFields);
+-            const label = labels[fid] || fid.replace('field', 'Field ');
+-            if (label) cols.push({ id: fid, label, path: `address_data.${fid}` });
+-          });
+-          cols.push({ id: 'flat_villa_no', label: 'Flat/Villa', path: 'address_data.flat_villa_no' });
+-          cols.push({ id: 'building_name', label: 'Building/Street', path: 'address_data.building_name' });
+-          return;
+-        }
+-
+-        if (!cols.find(c => c.id === f.id)) {
+-          cols.push({ id: f.id, label: f.label, type: f.type });
+-        }
+-      });
+-
+-      // 3. Dynamic Discovery: Scan data for missing fields (like manoj1)
+-      if (customerList.length > 0) {
+-        const first = customerList[0];
+-        const ignoreKeys = [
+-          '_id', '__v', 'address', 'address_data', 'full_address', 
+-          'branch_names', 'company_names', 'password', 'token', 
+-          'role_permissions', 'createdAt', 'updatedAt', 'created_at', 
+-          'modified_at', 'modifiedAt', 'customer_group_company', 
+-          'customer_group_company_name', 'customer_group_company_names',
+-          'customer_group_manoj', 'Company Name', 'companyName', 
+-          'company_name_full', 'createdBy', 'created_by'
+-        ];
+-        Object.keys(first).forEach(key => {
+-          const lowerKey = key.toLowerCase();
+-          const isSystem = ignoreKeys.includes(key) || 
+-                          lowerKey.includes('createdat') || 
+-                          lowerKey.includes('updatedat') ||
+-                          lowerKey.includes('modifiedat') ||
+-                          lowerKey.includes('created_at') ||
+-                          lowerKey.includes('modified_at');
+-          
+-          if (!isSystem && !cols.find(c => c.id === key || c.path === key)) {
+-            // If it's a new key found in data, add it!
+-            cols.push({ id: key, label: key.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ') });
+-          }
+-        });
+-      }
+-
+-      // 4. Ensure Company/Branch
+-      if (!cols.find(c => c.id === 'company_name')) cols.push({ id: 'company_name', label: 'Company', path: 'company_name' });
+-      if (!cols.find(c => c.id === 'branch_name')) cols.push({ id: 'branch_name', label: 'Branch', path: 'branch_name' });
+-
+-      return cols;
+-    }, [doctypeFields, filterCountry, addressStructure, addressDoctypeFields, sortedAddressFieldIds, customerList]);
+-
+-   // Persist columns whenever they change
+-   useEffect(() => {
+-     localStorage.setItem('customer_list_visible_columns', JSON.stringify(visibleColumns));
+-   }, [visibleColumns]);
+-
+-  const navigate = useNavigate();
+-  const isdCodes = [
+-    { code: "+91", country: "India" },
+-    { code: "+1", country: "USA" },
+-    { code: "+44", country: "UK" },
+-    { code: "+971", country: "UAE" },
+-    { code: "+61", country: "Australia" },
+-  ];
+-  
+-  // Fetch config to determine baseUrl (like in AdminPage)
+-  useEffect(() => {
+-    if (!configLoading) {
+-      const url = baseUrl || "";
+-      Promise.all([
+-        fetchPermissions(url),
+-        handleViewCustomers(url),
+-        fetchCustomerGroups(url),
+-        fetchAddressStructure(url),
+-        fetchAddressDoctype(url),
+-        fetchCompanies(url),
+-        fetchBranches(url),
+-        fetchDoctype(url)
+-      ]);
+-    }
+-  }, [configLoading, baseUrl]);
+-
+-  // Re-fetch branches when company filter changes
+-  useEffect(() => {
+-    if (!configLoading) {
+-      fetchBranches(baseUrl || "");
+-    }
+-  }, [filterCompanyName, configLoading, baseUrl]);
+-
+-  const fetchCompanies = async (currentBaseUrl = baseUrl) => {
+-    try {
+-      const userStr = localStorage.getItem('user');
+-      const userObj = userStr ? JSON.parse(userStr) : {};
+-      const role = userObj.role?.toLowerCase() || "";
+-      
+-      // If branch admin, they don't need company list (scope is limited)
+-      if (role.includes('branch')) return;
+-
+-      if (userObj.role?.toLowerCase() !== 'group_admin' && userObj.role?.toLowerCase() !== 'superadmin') return;
+-
+-      // Performance: use profile companies if available
+-      if (userObj.companies && userObj.companies.length > 0) {
+-        setCompanyOptions(userObj.companies);
+-        return;
+-      }
+-
+-      const response = await axios.get(`${currentBaseUrl}/api/company-details`, { headers: getHeaders() });
+-      const details = response.data.companyDetails || [];
+-      const names = details.map(d => d.restaurantName).filter(n => n);
+-      const uniqueNames = [...new Set(names)];
+-      setCompanyOptions(uniqueNames.length > 0 ? uniqueNames : ['POS 8']);
+-    } catch (err) {
+-      console.error('Error fetching companies:', err);
+-    }
+-  };
+-
+-  const fetchAddressDoctype = async (url) => {
+-    try {
+-      const res = await axios.get(`${url}/api/doctypes/Address Structure`, { headers: getHeaders() });
+-      setAddressDoctypeFields(res.data.fields || []);
+-    } catch (e) { console.error("Error fetching address doctype:", e); }
+-  };
+-
+-  const fetchDoctype = async (currentBaseUrl = baseUrl) => {
+-    try {
+-      const response = await axios.get(`${currentBaseUrl}/api/doctypes/Customer`, { headers: getHeaders() });
+-      const fields = response.data.fields || [];
+-      setDoctypeFields(fields);
+-      
+-      // Fetch data for Table/Link fields
+-      const tableFields = fields.filter(f => f.type === 'Table' && f.link_doctype);
+-      for (const field of tableFields) {
+-        fetchTableData(field);
+-      }
+-    } catch (error) {
+-      console.error("Error fetching doctype:", error);
+-    }
+-  };
+-
+-  const fetchTableData = async (field) => {
+-    // Skip Address Structure as it's handled by fetchAddressStructure
+-    if (field.link_doctype === "Address Structure") return;
+-    
+-    try {
+-      const doctypeApiMap = {
+-        "Customer": "/api/customers",
+-        "Customer Group": "/api/customer-groups"
+-      };
+-      const endpoint = doctypeApiMap[field.link_doctype] || `/api/${field.link_doctype.toLowerCase().replace(/\s+/g, '-')}`;
+-      const res = await axios.get(`${baseUrl}${endpoint}`, { headers: getHeaders() });
+-      setTableOptions(prev => ({ ...prev, [field.id]: res.data }));
+-    } catch (e) {
+-      console.error(`Failed to fetch data for ${field.link_doctype}`, e);
+-    }
+-  };
+-
+-  const getDisplayValueForTable = (record, doctype) => {
+-    if (!record) return "";
+-    if (doctype === "Customer") return record.customer_name;
+-    if (doctype === "Customer Group") return record.group_name;
+-    return record.name || record.label || record.group_name || record.customer_name || record._id || "";
+-  };
+-
+-  const isMandatory = (id) => {
+-    const field = doctypeFields.find(f => f.id === id);
+-    return field ? field.mandatory : false;
+-  };
+-
+-  const fetchBranches = async (currentBaseUrl = baseUrl) => {
+-    try {
+-      const userStr = localStorage.getItem('user');
+-      const userObj = userStr ? JSON.parse(userStr) : {};
+-      const role = userObj.role?.toLowerCase() || "";
+-      
+-      let targetComp = filterCompanyName;
+-      if (!targetComp) {
+-        targetComp = localStorage.getItem('active_company') || userObj.company_name || userObj.company || "";
+-      }
+-
+-      if (targetComp && targetComp !== 'All') {
+-        const res = await axios.get(`${currentBaseUrl}/api/branches?company_name=${encodeURIComponent(targetComp)}`, {
+-          headers: getHeaders(null, targetComp)
+-        });
+-        const branches = res.data.branches || res.data || [];
+-        const names = Array.isArray(branches) ? branches.map(b => typeof b === 'string' ? b : (b.branch_name || b.branch || b.name)) : [];
+-        setBranchOptions([...new Set(names.filter(n => n))]);
+-      } else if (role.includes('branch') || role.includes('admin')) {
+-        // Fetch all branches if role allows but no specific company filtered yet
+-        const res = await axios.get(`${currentBaseUrl}/api/branches`, { headers: getHeaders() });
+-        const branches = res.data.branches || res.data || [];
+-        const names = Array.isArray(branches) ? branches.map(b => typeof b === 'string' ? b : (b.branch_name || b.branch || b.name)) : [];
+-        setBranchOptions([...new Set(names.filter(n => n))]);
+-      }
+-    } catch (err) {
+-      console.error('Error fetching branches:', err);
+-    }
+-  };
+-  const handleViewCustomers = async (currentBaseUrl = baseUrl) => {
+-    try {
+-      setLoading(true);
+-      const response = await axios.get(`${currentBaseUrl}/api/customers`, { headers: getHeaders() });
+-      const data = response.data;
+-      // Ensure data is an array and parse any MongoDB extended JSON
+-      if (!Array.isArray(data)) {
+-        throw new Error("Invalid data format: Expected an array");
+-      }
+-      const parsedData = data.map(customer => {
+-        // Flatten address data if it exists
+-        let address_data = {};
+-        if (Array.isArray(customer.address) && customer.address.length > 0) {
+-          address_data = customer.address[0];
+-        } else if (customer.address && typeof customer.address === 'object' && !Array.isArray(customer.address)) {
+-          address_data = customer.address;
+-        } else if (customer.address_data) {
+-          address_data = customer.address_data;
+-        }
+-
+-        // Helper to find value across many possible field name variations
+-        const findVal = (baseId, aliases = []) => {
+-          const allKeys = [baseId, ...aliases];
+-          for (const key of allKeys) {
+-            const val = parseMongoValue(customer[key] || address_data[key]);
+-            if (val && val !== 'N/A' && val !== 'undefined') return val;
+-          }
+-          return null;
+-        };
+-
+-        const cntry = findVal('country', ['country_name', 'Country Name', 'countryName', 'CountryName']);
+-        const f1 = findVal('field1', ['state_ut', 'State/UT', 'stateUt', 'StateUt', 'state', 'State']);
+-        const f2 = findVal('field2', ['district', 'District', 'districtName', 'DistrictName']);
+-        const f3 = findVal('field3', ['taluk', 'Taluk', 'area', 'Area', 'taluka', 'Taluka']);
+-        const building = findVal('building_name', ['building_street_name', 'Building / Street Name', 'buildingStreetName', 'street', 'Street']);
+-        const flat_villa = findVal('flat_villa_no', ['Flat / Villa No', 'flatVillaNo', 'villa_no', 'Villa No']);
+-
+-        const full_address = [cntry, f1, f2, f3, building, flat_villa]
+-          .filter(v => v && v !== 'N/A' && v !== 'undefined').join(', ');
+-
+-        return {
+-          ...customer,
+-          address_data,
+-          full_address: full_address || 'N/A',
+-          phone_number: parseMongoValue(customer.phone_number),
+-          whatsapp_number: parseMongoValue(customer.whatsapp_number),
+-          email: parseMongoValue(customer.email),
+-          customer_name: parseMongoValue(customer.customer_name),
+-          building_name: building || 'N/A',
+-          flat_villa_no: flat_villa || 'N/A',
+-          country: cntry || 'N/A',
+-          field1: f1 || 'N/A',
+-          field2: f2 || 'N/A',
+-          field3: f3 || 'N/A',
+-        };
+-      });
+-      console.log("Parsed Customer List:", parsedData);
+-      setCustomerList(parsedData);
+-      setFilteredCustomers(parsedData);
+-      setError(null);
+-    } catch (error) {
+-      console.error('Error fetching customers:', error);
+-      setError(error.response?.data?.error || error.message || `Failed to fetch customers: ${error.status || 'Unknown error'}`);
+-    } finally {
+-      setLoading(false);
+-    }
+-  };
+-  // Fetch customer groups (updated to use axios and baseUrl)
+-  const fetchCustomerGroups = async (currentBaseUrl = baseUrl) => {
+-    try {
+-      const response = await axios.get(`${currentBaseUrl}/api/customer-groups`, { headers: getHeaders() });
+-      const data = response.data;
+-      setCustomerGroups(Array.isArray(data) ? data : []);
+-    } catch (error) {
+-      console.error('Error fetching customer groups:', error);
+-      setCustomerGroups([]);
+-    }
+-  };
+-  // Fetch address structure (updated to use axios and baseUrl)
+-  const fetchAddressStructure = async (currentBaseUrl = baseUrl) => {
+-    try {
+-      const response = await axios.get(`${currentBaseUrl}/api/address-structures`, { headers: getHeaders() });
+-      const data = response.data;
+-
+-      // Merge API data with local hierarchy to ensure integrity
+-      const apiStructure = data.structure || {};
+-      const mergedCountries = { ...countryAddressHierarchy, ...apiStructure.countries };
+-
+-      setAddressStructure({ countries: mergedCountries });
+-      setLinkedValues(data.linkedValues || {});
+-    } catch (error) {
+-      console.error('Error fetching address structure:', error);
+-      // Fallback already used in initial state
+-    }
+-  };
+-  // Compute unique values for filters (dynamic based on filterCountry)
+-  const uniqueCountries = useMemo(() =>
+-    [...new Set(customerList.map(c => c.country).filter(Boolean))].sort(),
+-    [customerList]
+-  );
+-  const uniqueField1 = useMemo(() => {
+-    let fields = customerList.map(c => c.field1).filter(Boolean);
+-    if (filterCountry) {
+-      fields = customerList
+-        .filter(c => c.country === filterCountry)
+-        .map(c => c.field1)
+-        .filter(Boolean);
+-    }
+-    return [...new Set(fields)].sort();
+-  }, [customerList, filterCountry]);
+-  const uniqueField2 = useMemo(() => {
+-    let fields = customerList.map(c => c.field2).filter(Boolean);
+-    if (filterCountry) {
+-      fields = customerList
+-        .filter(c => c.country === filterCountry)
+-        .map(c => c.field2)
+-        .filter(Boolean);
+-    }
+-    return [...new Set(fields)].sort();
+-  }, [customerList, filterCountry]);
+-  const uniqueField3 = useMemo(() => {
+-    let fields = customerList.map(c => c.field3).filter(Boolean);
+-    if (filterCountry) {
+-      fields = customerList
+-        .filter(c => c.country === filterCountry)
+-        .map(c => c.field3)
+-        .filter(Boolean);
+-    }
+-    return [...new Set(fields)].sort();
+-  }, [customerList, filterCountry]);
+-  // Enhanced filtering including search and dynamic field filters
+-  useEffect(() => {
+-    let filtered = customerList;
+-    // Apply column-specific filters
+-    Object.entries(columnFilters).forEach(([colId, filterVal]) => {
+-      if (filterVal) {
+-        const colDef = allColumns.find(c => c.id === colId);
+-        filtered = filtered.filter(customer => {
+-          let val = '';
+-          if (colDef && colDef.path) {
+-            const parts = colDef.path.split('.');
+-            let current = customer;
+-            for (const part of parts) {
+-              current = current ? current[part] : undefined;
+-            }
+-            val = String(current || '');
+-          } else {
+-            val = String(customer[colId] || '');
+-          }
+-          return val.toLowerCase().includes(filterVal.toLowerCase());
+-        });
+-      }
+-    });
+-    // Country filter
+-    if (filterCountry) {
+-      filtered = filtered.filter((customer) => customer.country === filterCountry);
+-    }
+-    // Field1 filter
+-    if (filterField1) {
+-      filtered = filtered.filter((customer) => customer.field1 === filterField1);
+-    }
+-    // Field2 filter
+-    if (filterField2) {
+-      filtered = filtered.filter((customer) => customer.field2 === filterField2);
+-    }
+-    // Field3 filter
+-    if (filterField3) {
+-      filtered = filtered.filter((customer) => customer.field3 === filterField3);
+-    }
+-    // Company filter
+-    if (filterCompanyName) {
+-      filtered = filtered.filter((customer) => {
+-        const comps = Array.isArray(customer.company_names) ? customer.company_names : (customer.company_name ? [customer.company_name] : []);
+-        return comps.includes(filterCompanyName) || customer.company_name === filterCompanyName || customer.company_name === 'All';
+-      });
+-    }
+-    // Branch filter
+-    if (filterBranchName) {
+-      filtered = filtered.filter((customer) => {
+-        const branches = customer.branch_names || [];
+-        return branches.includes(filterBranchName) || customer.branch_name === filterBranchName;
+-      });
+-    }
+-    setFilteredCustomers(filtered);
+-  }, [columnFilters, filterCountry, filterField1, filterField2, filterField3, filterCompanyName, filterBranchName, customerList, allColumns]);
+-  const handleSearch = (e) => {
+-    setSearchTerm(e.target.value);
+-  };
+-
+-  // Fetch Permissions (UPDATED: accept currentBaseUrl)
+-  const [isCompanyAdmin, setIsCompanyAdmin] = useState(false);
+-  const [isGroupAdmin, setIsGroupAdmin] = useState(false);
+-  const [userBranch, setUserBranch] = useState("");
+-
+-  const fetchPermissions = async (currentBaseUrl = baseUrl) => {
+-    try {
+-      setPermsLoading(true);
+-      const userStr = localStorage.getItem('user');
+-      if (userStr) {
+-        const userObj = JSON.parse(userStr);
+-        const role = userObj.role || userObj.UserType || '';
+-        const isAdminRole = checkIsAdmin(userObj);
+-
+-        const isGroupAdminRole = checkIsGlobalAdmin(userObj);
+-        
+-        setIsCompanyAdmin(isAdminRole);
+-        setIsGroupAdmin(isGroupAdminRole);
+-        setUserBranch(userObj.branch_name || userObj.branch || "");
+-
+-        if (role) {
+-          const url = `${currentBaseUrl}/api/role-permissions?role=${encodeURIComponent(role)}`;
+-          const response = await axios.get(url, { headers: getHeaders() });
+-          const perms = response.data.permissions || [];
+-          const pagePerm = perms.find(p => p.pageId === 'customer_list');
+-          
+-          if (isAdminRole || isGroupAdminRole) {
+-            setCanRead(true);
+-            setCanWrite(true);
+-            setCanDelete(true);
+-          } else if (pagePerm) {
+-            setCanRead(pagePerm.canRead === true);
+-            setCanWrite(pagePerm.canWrite === true);
+-            setCanDelete(pagePerm.canDelete === true);
+-          }
+-        }
+-      }
+-    } catch (error) {
+-      console.error("Error fetching permissions:", error);
+-    } finally {
+-      setPermsLoading(false);
+-    }
+-  };
+-
+-  const goToAdminPage = () => navigate("/admin");
+-  // Delete customer (updated to use axios and baseUrl)
+-  const handleDeleteCustomer = (customerId) => {
+-    if (!canDelete) {
+-      setPermModalMsg("You do not have permission to delete customers.");
+-      setShowPermModal(true);
+-      return;
+-    }
+-    if (!customerId || customerId === "undefined") {
+-      setWarningMessage("Invalid customer ID. Please try again.");
+-      return;
+-    }
+-    setCustomerToDelete(customerId);
+-    setShowDeleteConfirm(true);
+-  };
+-  const confirmDelete = async () => {
+-    if (!customerToDelete) return;
+-    try {
+-      await axios.delete(`${baseUrl}/api/customers/${customerToDelete}`);
+-      setCustomerList((prev) => prev.filter((customer) => customer._id !== customerToDelete));
+-      setFilteredCustomers((prev) => prev.filter((customer) => customer._id !== customerToDelete));
+-      setWarningMessage("Customer deleted successfully!");
+-    } catch (error) {
+-      console.error('Delete error:', error);
+-      setWarningMessage(`Error: ${error.response?.data?.error || error.message}`);
+-    } finally {
+-      setShowDeleteConfirm(false);
+-      setCustomerToDelete(null);
+-    }
+-  };
+-  // Edit customer
+-  const handleEditCustomer = (customer) => {
+-    if (!canWrite) {
+-      setPermModalMsg("You do not have permission to edit customers.");
+-      setShowPermModal(true);
+-      return;
+-    }
+-    navigate(`/edit-customer/${customer._id}`);
+-  };
+-
+-
+-
+-
+-
+-  // Helper to get filtered values is now redundant with getOptionsForField but keeping for structure
+-  const countryList = Object.keys(countryAddressHierarchy);
+-
+-  // Added Logic: Create New Value in Dropdown
+-
+-  // Save customer (updated to use axios and baseUrl)
+-
+-  // Clear warning after 5 seconds
+-  useEffect(() => {
+-    if (warningMessage) {
+-      const timer = setTimeout(() => setWarningMessage(""), 5000);
+-      return () => clearTimeout(timer);
+-    }
+-  }, [warningMessage]);
+-  // Filter clear handlers
+-  const clearFilter = (setter) => setter("");
+-  // Calculate visible address columns for radius adjustment
+-  const addressColsCount = Object.keys(visibleColumns).filter(k => k.startsWith('field') && visibleColumns[k]).length;
+-  const lastHeaderIndex = 4 + addressColsCount + 2; // Country (4) + address fields + WhatsApp+Email (2)
+-
+-
+-  if (permsLoading) {
+-    return (
+-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: 'linear-gradient(135deg, #ffffff 0%, #3498db 100%)' }}>
+-        <div style={{ textAlign: 'center', color: '#fff', fontSize: '1.5rem', fontWeight: 'bold' }}>
+-          <p>Loading Permissions...</p>
+-        </div>
+-      </div>
+-    );
+-  }
+-
+-  if (!canRead && !isCompanyAdmin && !isGroupAdmin && !permsLoading) {
+-    return (
+-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: 'linear-gradient(135deg, #ffffff 0%, #3498db 100%)' }}>
+-        <div style={{ textAlign: 'center', background: '#fff', padding: '40px', borderRadius: '15px', boxShadow: '0 4px 15px rgba(0,0,0,0.1)', maxWidth: '500px' }}>
+-          <h2 style={{ color: '#dc3545', marginBottom: '20px' }}>Access Denied</h2>
+-          <p style={{ color: '#6c757d', fontSize: '1.1rem' }}>You do not have permission to view the Customer List.</p>
+-          <button className="btn btn-primary" onClick={() => navigate('/admin')} style={{ marginTop: '20px', borderRadius: '50px', padding: '10px 30px', background: '#3498db', border: 'none' }}>Back to Admin</button>
+-        </div>
+-      </div>
+-    );
+-  }
+-
+-  const styles = {
+-    tableHeader: {
+-      padding: '16px 12px',
+-      textAlign: 'left',
+-      color: '#64748b',
+-      fontSize: '11px',
+-      fontWeight: '800',
+-      textTransform: 'uppercase',
+-      letterSpacing: '0.05em',
+-      borderBottom: '2px solid #f1f5f9',
+-      whiteSpace: 'nowrap',
+-      backgroundColor: '#f8fafc'
+-    },
+-    tableRow: {
+-      borderBottom: '1px solid #f1f5f9'
+-    },
+-    tableCell: {
+-      padding: '14px 12px',
+-      fontSize: '14px',
+-      color: '#334155',
+-      verticalAlign: 'middle'
+-    },
+-    groupBadge: {
+-      display: 'inline-block',
+-      padding: '4px 10px',
+-      borderRadius: '20px',
+-      backgroundColor: '#f5f3ff',
+-      color: '#7c3aed',
+-      fontSize: '11px',
+-      fontWeight: '700',
+-      textTransform: 'uppercase'
+-    },
+-    viewBtn: {
+-      padding: '6px 12px',
+-      borderRadius: '8px',
+-      backgroundColor: '#f8fafc',
+-      color: '#64748b',
+-      border: '1px solid #e2e8f0',
+-      fontSize: '12px',
+-      fontWeight: '700',
+-      cursor: 'pointer',
+-      transition: 'all 0.2s'
+-    },
+-    editBtnSmall: {
+-      padding: '6px 12px',
+-      borderRadius: '8px',
+-      backgroundColor: '#f0f9ff',
+-      color: '#0ea5e9',
+-      border: '1px solid #e0f2fe',
+-      fontSize: '12px',
+-      fontWeight: '700',
+-      cursor: 'pointer',
+-      transition: 'all 0.2s'
+-    },
+-    deleteBtnSmall: {
+-      padding: '6px 12px',
+-      borderRadius: '8px',
+-      backgroundColor: '#fef2f2',
+-      color: '#ef4444',
+-      border: '1px solid #fee2e2',
+-      fontSize: '12px',
+-      fontWeight: '700',
+-      cursor: 'pointer',
+-      transition: 'all 0.2s'
+-    }
+-  };
+-
+-  return (
+-    <ErrorBoundary>
+-      <div className="customer-list-page" style={{ 
+-        backgroundColor: "#f1f5f9", 
+-        height: "100vh", 
+-        display: "flex", 
+-        flexDirection: "column", 
+-        overflow: "hidden", 
+-        fontFamily: "'Outfit', sans-serif" 
+-      }}>
+-        <style>
+-          {`
+-            @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+-            
+-            .premium-table {
+-              width: 100%;
+-              border-collapse: separate;
+-              border-spacing: 0;
+-            }
+-            .premium-table th {
+-              background: #f8fafc;
+-              color: #64748b;
+-              font-weight: 800;
+-              font-size: 11px;
+-              text-transform: uppercase;
+-              letter-spacing: 0.5px;
+-              padding: 16px 20px;
+-              text-align: left;
+-              border-bottom: 2px solid #e2e8f0;
+-              position: sticky;
+-              top: 0;
+-              z-index: 10;
+-            }
+-            .premium-table td {
+-              padding: 16px 20px;
+-              color: #1e293b;
+-              font-size: 14px;
+-              font-weight: 600;
+-              border-bottom: 1px solid #f1f5f9;
+-              transition: all 0.2s ease;
+-              vertical-align: middle;
+-            }
+-            .premium-table tr:hover td {
+-              background: #f8fafc;
+-            }
+-            .premium-table tr:last-child td {
+-              border-bottom: none;
+-            }
+-            
+-            ::-webkit-scrollbar { width: 6px; }
+-            ::-webkit-scrollbar-track { background: transparent; }
+-            ::-webkit-scrollbar-thumb { background: #e2e8f0; borderRadius: 10px; }
+-            ::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
+-
+-            .premium-filter-select .searchable-list {
+-              max-height: 250px;
+-              background: #fff;
+-              border: 1px solid #e2e8f0;
+-              border-radius: 16px;
+-              box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+-              margin-top: 8px;
+-              overflow-y: auto;
+-              z-index: 1001;
+-            }
+-            .premium-filter-select li {
+-              padding: 12px 16px;
+-              font-size: 14px;
+-              font-weight: 600;
+-              color: #334155;
+-              transition: all 0.2s;
+-              cursor: pointer;
+-            }
+-            .premium-filter-select li:hover {
+-              background: #f1f5f9;
+-              color: #3b82f6;
+-            }
+-             .premium-filter-select input {
+-               height: 52px !important;
+-               padding: 0 20px !important;
+-               padding-right: 44px !important;
+-               border-radius: 16px !important;
+-               border: 1.5px solid #e2e8f0 !important;
+-               font-size: 15px !important;
+-               width: 100% !important;
+-               background-color: #f8fafc !important;
+-               transition: all 0.2s !important;
+-               outline: none !important;
+-               font-weight: 600 !important;
+-               color: #1e293b !important;
+-               box-shadow: none !important;
+-             }
+-             .premium-filter-select input::placeholder {
+-               color: #94a3b8 !important;
+-               font-weight: 500 !important;
+-               opacity: 1 !important;
+-             }
+-             .premium-filter-select input:focus {
+-               border-color: #3b82f6 !important;
+-               background-color: #fff !important;
+-               box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1) !important;
+-             }
+-
+-            @keyframes fadeInScale {
+-              from { opacity: 0; transform: scale(0.95) translateY(10px); }
+-              to { opacity: 1; transform: scale(1) translateY(0); }
+-            }
+-            .premium-card {
+-              animation: fadeInScale 0.4s cubic-bezier(0, 0, 0.2, 1);
+-            }
+-          `}
+-        </style>
+-
+-          <div>
+-            {/* Header Section */}
+-            <div style={{ 
+-              display: 'flex', 
+-              justifyContent: 'space-between', 
+-              alignItems: 'center', 
+-              background: '#fff',
+-              padding: '20px 5%',
+-              borderRadius: '0',
+-              boxShadow: '0 4px 15px rgba(0, 0, 0, 0.05)',
+-              zIndex: 2000,
+-              borderBottom: '1px solid #e2e8f0',
+-              width: '100%',
+-              boxSizing: 'border-box',
+-              flex: '0 0 auto'
+-            }}>
+-              {/* Left Side: Back Button */}
+-              <div style={{ flex: '0 0 200px' }}>
+-                <button 
+-                  onClick={goToAdminPage}
+-                  style={{
+-                    height: '52px',
+-                    minWidth: '180px',
+-                    padding: '0 24px',
+-                    borderRadius: '50px',
+-                    border: '1.5px solid #e2e8f0',
+-                    background: '#fff',
+-                    color: '#3b82f6',
+-                    display: 'flex',
+-                    alignItems: 'center',
+-                    justifyContent: 'center',
+-                    gap: '10px',
+-                    fontWeight: '800',
+-                    fontSize: '15px',
+-                    cursor: 'pointer',
+-                    transition: 'all 0.3s ease',
+-                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)'
+-                  }}
+-                  onMouseOver={(e) => { e.currentTarget.style.borderColor = '#3b82f6'; e.currentTarget.style.background = '#eff6ff'; e.currentTarget.style.transform = 'translateX(-5px)'; }}
+-                  onMouseOut={(e) => { e.currentTarget.style.borderColor = '#e2e8f0'; e.currentTarget.style.background = '#fff'; e.currentTarget.style.transform = 'translateX(0)'; }}
+-                >
+-                  <FaArrowLeft style={{ fontSize: '14px' }} /> Back to Admin
+-                </button>
+-              </div>
+-
+-              {/* Center: Title */}
+-              <div style={{ textAlign: 'center', flex: 1 }}>
+-                <h2 style={{ margin: 0, fontSize: '32px', fontWeight: '800', color: '#0f172a', letterSpacing: '-1px' }}>Customer Management</h2>
+-              </div>
+-
+-              {/* Right Side: Filters & Actions */}
+-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: '0 0 auto', justifyContent: 'flex-end' }}>
+-                {/* Company Filter (for Group Admins) */}
+-                {isGroupAdmin && companyOptions.length > 0 && (
+-                  <select
+-                    value={filterCompanyName}
+-                    onChange={(e) => setFilterCompanyName(e.target.value)}
+-                    style={{
+-                      height: '52px',
+-                      padding: '0 20px',
+-                      borderRadius: '16px',
+-                      border: '1.5px solid #e2e8f0',
+-                      fontSize: '14px',
+-                      backgroundColor: '#f8fafc',
+-                      cursor: 'pointer',
+-                      outline: 'none',
+-                      minWidth: '200px',
+-                      fontWeight: '800',
+-                      color: '#0f172a'
+-                    }}
+-                  >
+-                    <option value="">All Companies</option>
+-                    {companyOptions.map((comp, idx) => (
+-                      <option key={idx} value={comp}>{comp}</option>
+-                    ))}
+-                  </select>
+-                )}
+-
+-                {/* Branch Filter */}
+-                {(isGroupAdmin || (isCompanyAdmin && !userBranch)) && branchOptions.length > 0 && (
+-                  <select
+-                    value={filterBranchName}
+-                    onChange={(e) => setFilterBranchName(e.target.value)}
+-                    style={{
+-                      height: '52px',
+-                      padding: '0 20px',
+-                      borderRadius: '16px',
+-                      border: '1.5px solid #e2e8f0',
+-                      fontSize: '14px',
+-                      backgroundColor: '#f8fafc',
+-                      cursor: 'pointer',
+-                      outline: 'none',
+-                      minWidth: '180px',
+-                      fontWeight: '800',
+-                      color: '#475569'
+-                    }}
+-                  >
+-                    <option value="">All Branches</option>
+-                    {branchOptions.map((branch, idx) => (
+-                      <option key={idx} value={branch}>{branch}</option>
+-                    ))}
+-                  </select>
+-                )}
+-                
+-                <button
+-                  onClick={() => setShowManageColumns(true)}
+-                  style={{
+-                    height: '52px',
+-                    padding: '0 24px',
+-                    borderRadius: '16px',
+-                    backgroundColor: '#fff',
+-                    border: '1.5px solid #e2e8f0',
+-                    color: '#475569',
+-                    fontWeight: '800',
+-                    fontSize: '14px',
+-                    cursor: 'pointer',
+-                    display: 'flex',
+-                    alignItems: 'center',
+-                    gap: '10px',
+-                    transition: 'all 0.2s'
+-                  }}
+-                  onMouseOver={(e) => { e.currentTarget.style.background = '#f8fafc'; e.currentTarget.style.borderColor = '#3b82f6'; e.currentTarget.style.color = '#3b82f6'; }}
+-                  onMouseOut={(e) => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.borderColor = '#e2e8f0'; e.currentTarget.style.color = '#475569'; }}
+-                >
+-                  <FaLayerGroup /> Columns
+-                </button>
+-
+-                <button
+-                  onClick={() => navigate("/create-customer")}
+-                  style={{
+-                    height: '52px',
+-                    padding: '0 32px',
+-                    background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+-                    color: '#ffffff',
+-                    border: 'none',
+-                    borderRadius: '16px',
+-                    fontWeight: '800',
+-                    fontSize: '15px',
+-                    cursor: 'pointer',
+-                    display: 'flex',
+-                    alignItems: 'center',
+-                    gap: '12px',
+-                    boxShadow: '0 10px 15px -3px rgba(59, 130, 246, 0.4)',
+-                    transition: 'all 0.3s'
+-                  }}
+-                >
+-                  <FaPlus /> Create Customer
+-                </button>
+-              </div>
+-              </div>
+-            </div>
+-
+-            <div style={{ padding: "24px 40px 0", flex: '0 0 auto' }}>
+-              {/* Filter Panel (Static) */}
+-              <div style={{ 
+-                background: '#fff', 
+-                padding: '24px 32px', 
+-                borderRadius: '24px', 
+-                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
+-                border: '1px solid #f1f5f9'
+-              }} className="premium-card">
+-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', borderBottom: '1.5px solid #f8fafc', paddingBottom: '12px' }}>
+-                <div style={{ color: '#0f172a', fontSize: '13px', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '1.5px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+-                  <FaLayerGroup style={{ color: '#3b82f6' }} /> Filter Customer Directory:
+-                </div>
+-                <button 
+-                  onClick={() => setColumnFilters({})}
+-                  style={{ background: '#f1f5f9', border: 'none', color: '#3b82f6', fontWeight: '800', fontSize: '11px', cursor: 'pointer', textTransform: 'uppercase', padding: '6px 12px', borderRadius: '8px', transition: 'all 0.2s' }}
+-                  onMouseOver={(e) => { e.currentTarget.style.background = '#3b82f6'; e.currentTarget.style.color = '#fff'; }}
+-                  onMouseOut={(e) => { e.currentTarget.style.background = '#f1f5f9'; e.currentTarget.style.color = '#3b82f6'; }}
+-                >
+-                  Clear All Filters
+-                </button>
+-              </div>
+-              
+-              <div style={{ 
+-                display: 'grid', 
+-                gridTemplateColumns: 'repeat(5, 1fr)', 
+-                gap: '20px 16px'
+-              }}>
+-                {allColumns.filter(c => visibleColumns[c.id] && !['country', 'field1', 'field2', 'field3'].includes(c.id)).map(col => (
+-                  <ColumnFilterInput 
+-                    key={col.id}
+-                    col={col}
+-                    customerList={customerList}
+-                    value={columnFilters[col.id] || ""}
+-                    onChange={(val) => setColumnFilters(prev => ({ ...prev, [col.id]: val }))}
+-                  />
+-                ))}
+-                </div>
+-            </div>
+-            </div>
+-
+             {/* Scrollable Data Area */}
+             <div style={{ flex: 1, overflowY: 'auto', padding: "24px 40px 40px" }}>
+ 
+@@ -1596,47 +536,6 @@ const CustomerListPage = () => {
+                     <tr>
+                       <th style={{ width: '60px' }}>#</th>
+                       {allColumns.filter(c => visibleColumns[c.id]).map((col) => {
+-                        const isLocationField = ['country', 'field1', 'field2', 'field3'].includes(col.id);
+-                        if (isLocationField) {
+-                          const labels = getAddressLabels(filterCountry || 'India', addressStructure, addressDoctypeFields);
+-                          const currentLabel = col.id === 'country' ? 'Country' : (labels[col.id] || col.label);
+-                          const filterValue = col.id === 'country' ? filterCountry : 
+-                                              col.id === 'field1' ? filterField1 :
+-                                              col.id === 'field2' ? filterField2 : filterField3;
+-                          const setFilter = col.id === 'country' ? setFilterCountry :
+-                                            col.id === 'field1' ? setFilterField1 :
+-                                            col.id === 'field2' ? setFilterField2 : setFilterField3;
+-
+-                          return (
+-                            <th key={col.id} style={{ minWidth: '180px' }}>
+-                              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+-                                <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{currentLabel}</span>
+-                                <select
+-                                  value={filterValue}
+-                                  onChange={(e) => setFilter(e.target.value)}
+-                                  onClick={(e) => e.stopPropagation()}
+-                                  style={{
+-                                    padding: '6px 10px',
+-                                    borderRadius: '8px',
+-                                    border: '1.5px solid #e2e8f0',
+-                                    fontSize: '12px',
+-                                    fontWeight: '700',
+-                                    color: '#475569',
+-                                    backgroundColor: '#fff',
+-                                    cursor: 'pointer',
+-                                    outline: 'none',
+-                                    width: '100%'
+-                                  }}
+-                                >
+-                                  <option value="">All {currentLabel}</option>
+-                                  {getOptionsForField(col.id).map(opt => (
+-                                    <option key={opt} value={opt}>{opt}</option>
+-                                  ))}
+-                                </select>
+-                              </div>
+-                            </th>
+-                          );
+-                        }
+                         return <th key={col.id}>{col.label}</th>;
+                       })}
+                       <th style={{ textAlign: 'right', verticalAlign: 'bottom', paddingBottom: '20px' }}>Actions</th>

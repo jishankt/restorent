@@ -1,0 +1,134 @@
+{
+  "branch": "All Branches",
+  "branch_name": "All Branches",
+  "branch_names": [
+    "All Branches"
+  ],
+  "company_names": [
+    "Global"
+  ],
+  "fields": [
+    {
+      "hidden": false,
+      "id": "sec_pi_basic",
+      "idx": 0,
+      "is_default": true,
+      "label": "Basic Details",
+      "type": "Section Break"
+    },
+    {
+      "hidden": false,
+      "id": "company",
+      "idx": 1,
+      "is_default": true,
+      "label": "Brand",
+      "link_doctype": "Brand",
+      "mandatory": true,
+      "type": "Link",
+      "allow_create_new": false
+    },
+    {
+      "allow_create_new": false,
+      "hidden": false,
+      "id": "name",
+      "idx": 2,
+      "is_default": true,
+      "label": "Item Name",
+      "link_doctype": "",
+      "mandatory": true,
+      "type": "Data"
+    },
+    {
+      "hidden": false,
+      "id": "sec_pi_measure",
+      "idx": 3,
+      "is_default": true,
+      "label": "Measurements",
+      "type": "Section Break"
+    },
+    {
+      "hidden": false,
+      "id": "grams",
+      "idx": 4,
+      "is_default": true,
+      "label": "Grams",
+      "mandatory": false,
+      "type": "Number"
+    },
+    {
+      "hidden": false,
+      "id": "boxToMaster",
+      "idx": 5,
+      "is_default": true,
+      "label": "Packets per Box",
+      "mandatory": true,
+      "type": "Number"
+    },
+    {
+      "hidden": false,
+      "id": "masterUnit",
+      "idx": 6,
+      "is_default": true,
+      "label": "Unit",
+      "mandatory": false,
+      "type": "Select"
+    },
+    {
+      "allow_create_new": false,
+      "hidden": false,
+      "id": "masterToOuter",
+      "idx": 7,
+      "is_default": true,
+      "label": "Units per Packet",
+      "link_doctype": "",
+      "mandatory": true,
+      "type": "Number"
+    },
+    {
+      "hidden": false,
+      "id": "outerUnit",
+      "idx": 8,
+      "is_default": true,
+      "label": "Unit",
+      "mandatory": false,
+      "type": "Select"
+    },
+    {
+      "hidden": false,
+      "id": "outerToNos",
+      "idx": 9,
+      "is_default": true,
+      "label": "Total Units per Box",
+      "mandatory": true,
+      "type": "Number"
+    },
+    {
+      "hidden": false,
+      "id": "nosUnit",
+      "idx": 10,
+      "is_default": true,
+      "label": "Unit",
+      "mandatory": false,
+      "type": "Select"
+    },
+    {
+      "hidden": false,
+      "id": "sec_pi_supp",
+      "idx": 11,
+      "is_default": true,
+      "label": "Supplier Details",
+      "type": "Section Break"
+    },
+    {
+      "hidden": false,
+      "id": "suppliers",
+      "idx": 12,
+      "is_default": true,
+      "label": "Supplier",
+      "link_doctype": "Supplier",
+      "mandatory": false,
+      "type": "Table"
+    }
+  ],
+  "name": "Purchase Item"
+}

@@ -1,0 +1,72 @@
+{
+  "fields": [
+    {
+      "id": "description",
+      "is_default": true,
+      "label": "Offer Name / Description",
+      "mandatory": true,
+      "type": "Data"
+    },
+    {
+      "id": "items",
+      "is_default": true,
+      "label": "Selected Components",
+      "link_doctype": "Item",
+      "mandatory": true,
+      "type": "Table"
+    },
+    {
+      "id": "total_price",
+      "is_default": true,
+      "label": "Calculated Total Price",
+      "mandatory": true,
+      "type": "Number"
+    },
+    {
+      "id": "offer_price",
+      "is_default": true,
+      "label": "Offer Price",
+      "mandatory": true,
+      "type": "Number"
+    },
+    {
+      "id": "offer_start_time",
+      "is_default": true,
+      "label": "Start Time",
+      "mandatory": false,
+      "type": "Datetime"
+    },
+    {
+      "id": "offer_end_time",
+      "is_default": true,
+      "label": "End Time",
+      "mandatory": false,
+      "type": "Datetime",
+      "hidden": false
+    },
+    {
+      "hidden": false,
+      "id": "images",
+      "is_default": true,
+      "label": "Offer Images",
+      "mandatory": false,
+      "type": "Attach Image"
+    },
+    {
+      "allow_create_new": false,
+      "hidden": false,
+      "id": "name",
+      "is_default": false,
+      "label": "name",
+      "mandatory": false,
+      "type": "Date"
+    }
+  ],
+  "name": "Combo Offer",
+  "settings": {
+    "enable_otp_on_edit": true
+  },
+  "company_names": [
+    "Global"
+  ]
+}

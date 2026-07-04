@@ -1,0 +1,82 @@
+{
+  "name": "Salary Slip",
+  "company_names": [
+    "Global"
+  ],
+  "fields": [
+    {
+      "id": "employee_id",
+      "label": "Employee",
+      "type": "Table",
+      "link_doctype": "Employee",
+      "mandatory": true,
+      "is_default": true
+    },
+    {
+      "id": "posting_date",
+      "label": "Posting Date",
+      "type": "Date",
+      "mandatory": true,
+      "is_default": true
+    },
+    {
+      "id": "start_date",
+      "label": "Start Date",
+      "type": "Date",
+      "mandatory": true,
+      "is_default": true
+    },
+    {
+      "id": "end_date",
+      "label": "End Date",
+      "type": "Date",
+      "mandatory": true,
+      "is_default": true
+    },
+    {
+      "id": "gross_pay",
+      "label": "Gross Pay",
+      "type": "Number",
+      "mandatory": true,
+      "is_default": true
+    },
+    {
+      "id": "total_deduction",
+      "label": "Total Deduction",
+      "type": "Number",
+      "mandatory": true,
+      "is_default": true
+    },
+    {
+      "id": "net_pay",
+      "label": "Net Pay",
+      "type": "Number",
+      "mandatory": true,
+      "is_default": true
+    },
+    {
+      "id": "status",
+      "label": "Status",
+      "type": "Select",
+      "options": [
+        "Draft",
+        "Submitted",
+        "Paid"
+      ],
+      "mandatory": true,
+      "is_default": true
+    },
+    {
+      "id": "payment_method",
+      "label": "Payment Method",
+      "type": "Select",
+      "options": [
+        "Cash",
+        "Bank Transfer",
+        "Cheque"
+      ],
+      "mandatory": false,
+      "is_default": true
+    }
+  ]
+}

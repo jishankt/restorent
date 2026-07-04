@@ -1,0 +1,67 @@
+{
+  "company_names": [
+    "Global"
+  ],
+  "fields": [
+    {
+      "id": "name",
+      "idx": 0,
+      "is_default": true,
+      "label": "Department / Type",
+      "mandatory": true,
+      "type": "Data"
+    },
+    {
+      "id": "description",
+      "idx": 1,
+      "is_default": true,
+      "label": "Description",
+      "mandatory": true,
+      "type": "Text"
+    },
+    {
+      "id": "designation",
+      "idx": 2,
+      "is_default": true,
+      "label": "Designation / Job Title",
+      "mandatory": false,
+      "type": "Data"
+    },
+    {
+      "id": "reportTo",
+      "idx": 3,
+      "is_default": true,
+      "label": "Reports To (Manager/Supervisor)",
+      "mandatory": false,
+      "type": "Data"
+    },
+    {
+      "id": "grade",
+      "idx": 4,
+      "is_default": true,
+      "label": "Employee Grade/Level",
+      "mandatory": false,
+      "type": "Data"
+    },
+    {
+      "id": "branch",
+      "idx": 5,
+      "is_default": true,
+      "label": "Branch/Location",
+      "mandatory": false,
+      "type": "Data"
+    },
+    {
+      "id": "salaryRange",
+      "idx": 6,
+      "is_default": true,
+      "label": "Salary Range",
+      "mandatory": true,
+      "type": "Data"
+    }
+  ],
+  "name": "Employee Type",
+  "settings": {
+    "enable_otp_on_edit": false
+  }
+}

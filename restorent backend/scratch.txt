@@ -1,0 +1,1 @@
+1492: def get_system_settings(company_name=None, branch_name=None):

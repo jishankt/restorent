@@ -1,0 +1,45 @@
+{
+  "name": "Schedule Assign Employee",
+  "company_names": [
+    "Global"
+  ],
+  "fields": [
+    {
+      "id": "employee_id",
+      "label": "Employee",
+      "type": "Table",
+      "link_doctype": "Employee",
+      "mandatory": true,
+      "is_default": true
+    },
+    {
+      "id": "schedule_id",
+      "label": "Schedule",
+      "type": "Table",
+      "link_doctype": "Schedule Master",
+      "mandatory": true,
+      "is_default": true
+    },
+    {
+      "id": "assigned_date",
+      "label": "Assigned Date",
+      "type": "Date",
+      "mandatory": true,
+      "is_default": true
+    },
+    {
+      "id": "is_active",
+      "label": "Active",
+      "type": "Check",
+      "mandatory": false,
+      "is_default": true
+    },
+    {
+      "id": "notes",
+      "label": "Notes",
+      "type": "Text",
+      "mandatory": false,
+      "is_default": true
+    }
+  ]
+}

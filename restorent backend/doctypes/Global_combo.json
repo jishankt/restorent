@@ -1,0 +1,144 @@
+{
+  "branch": "All Branches",
+  "branch_name": "All Branches",
+  "branch_names": [
+    "All Branches"
+  ],
+  "company_names": [
+    "Global"
+  ],
+  "fields": [
+    {
+      "id": "name1",
+      "idx": 0,
+      "is_default": true,
+      "label": "Combo Name",
+      "mandatory": true,
+      "type": "Data"
+    },
+    {
+      "id": "combo_price",
+      "idx": 1,
+      "is_default": true,
+      "label": "Price",
+      "mandatory": true,
+      "type": "Float"
+    },
+    {
+      "id": "tax_applicable",
+      "idx": 2,
+      "is_default": true,
+      "label": "Tax Applicable",
+      "mandatory": false,
+      "type": "Check"
+    },
+    {
+      "id": "tax_rate",
+      "idx": 3,
+      "is_default": true,
+      "label": "Tax Rate",
+      "mandatory": false,
+      "type": "Float"
+    },
+    {
+      "id": "combo_image",
+      "idx": 4,
+      "is_default": true,
+      "label": "Combo Image",
+      "mandatory": false,
+      "type": "Attach Image"
+    },
+    {
+      "allow_create_new": false,
+      "hidden": false,
+      "id": "kitchen_1779442433425",
+      "idx": 5,
+      "is_default": false,
+      "label": "kitchen",
+      "link_doctype": "",
+      "mandatory": false,
+      "type": "Section Break"
+    },
+    {
+      "allow_create_new": true,
+      "hidden": false,
+      "id": "kitchen",
+      "idx": 6,
+      "is_default": true,
+      "label": "Kitchen",
+      "link_doctype": "Kitchen",
+      "mandatory": false,
+      "type": "Table"
+    },
+    {
+      "allow_create_new": false,
+      "hidden": false,
+      "id": "itemgroup_1779442450113",
+      "idx": 7,
+      "is_default": false,
+      "label": "ItemGroup",
+      "link_doctype": "",
+      "mandatory": false,
+      "type": "Section Break"
+    },
+    {
+      "allow_create_new": true,
+      "hidden": false,
+      "id": "item_group",
+      "idx": 8,
+      "is_default": true,
+      "label": "Item Group",
+      "link_doctype": "Item Group",
+      "mandatory": false,
+      "type": "Table"
+    },
+    {
+      "allow_create_new": false,
+      "hidden": false,
+      "id": "variants_1779442550813",
+      "idx": 9,
+      "is_default": false,
+      "label": "Variants",
+      "link_doctype": "",
+      "mandatory": false,
+      "type": "Section Break"
+    },
+    {
+      "allow_create_new": true,
+      "hidden": false,
+      "id": "variant_table",
+      "idx": 10,
+      "is_default": true,
+      "label": "Variants",
+      "link_doctype": "Variant",
+      "mandatory": false,
+      "type": "Table"
+    },
+    {
+      "allow_create_new": false,
+      "hidden": false,
+      "id": "ingridiants_1779442563391",
+      "idx": 11,
+      "is_default": false,
+      "label": "Ingridiants",
+      "link_doctype": "",
+      "mandatory": false,
+      "type": "Section Break"
+    },
+    {
+      "allow_create_new": true,
+      "hidden": false,
+      "id": "ingredients",
+      "idx": 12,
+      "is_default": true,
+      "label": "Ingredients",
+      "link_doctype": "Ingredient & Nutrition",
+      "mandatory": false,
+      "type": "Table"
+    }
+  ],
+  "name": "Combo",
+  "settings": {
+    "enable_otp_on_edit": true
+  }
+}

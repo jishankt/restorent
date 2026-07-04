@@ -1,0 +1,1383 @@
+import React, { useCallback, useEffect, useRef, useState, useContext } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { io } from "socket.io-client";
+import { UserContext } from "../../Context/UserContext";
+
+class ErrorBoundary extends React.Component {
+  state = { hasError: false, error: null };
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ padding: "20px", color: "red", textAlign: "center" }}>
+          <h3>Something went wrong in the Kitchen view.</h3>
+          <p>{this.state.error?.message || "Unknown error"}</p>
+          <button
+            style={{
+              padding: "6px 12px",
+              backgroundColor: "#6c757d",
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+              cursor: "pointer",
+            }}
+            onClick={() => this.setState({ hasError: false, error: null })}
+          >
+            Try Again
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+function Kitchen() {
+  const navigate = useNavigate();
+  const [savedOrders, setSavedOrders] = useState([]);
+  const [selectedKitchen, setSelectedKitchen] = useState(null);
+  const [showStatusPopup, setShowStatusPopup] = useState(false);
+  const [showAllStatusPopup, setShowAllStatusPopup] = useState(false);
+  const [pickedUpItems, setPickedUpItems] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  // Keyboard Shortcuts Integration
+  useEffect(() => {
+    const isKeyboardShortcutsEnabled = localStorage.getItem("isKeyboardShortcutsEnabled") === "true";
+    if (!isKeyboardShortcutsEnabled) return;
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Backspace' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+        navigate(-1);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [navigate]);
+  const [lastHourSearchDate, setLastHourSearchDate] = useState("");
+  const [allStatusSearchDate, setAllStatusSearchDate] = useState("");
+  const [selectedCustomers, setSelectedCustomers] = useState([]);
+  const [itemDetailsCache, setItemDetailsCache] = useState({});
+  const { baseUrl, configLoading } = useContext(UserContext);
+  const currentYear = new Date().getFullYear().toString();
+
+  // NEW: Normalize order type to shorthands (DIN, TAK, OND)
+  const normalizeOrderType = (orderType) => {
+    if (!orderType) return "N/A";
+    const normalized = orderType.trim().toLowerCase();
+    const orderTypeMap = {
+      "dine in": "DIN",
+      "dine-in": "DIN",
+      takeaway: "TAK",
+      "take away": "TAK",
+      "online delivery": "OND",
+      delivery: "OND",
+    };
+    return orderTypeMap[normalized] || orderType;
+  };
+
+  // NEW: Standardize Token No prefixes for display (e.g., Take Away-0077 -> TAK-0077)
+  const formatTokenNo = (tokenNo) => {
+    if (!tokenNo) return "N/A";
+    return tokenNo
+      .replace(/Takeaway-/i, "TAK-")
+      .replace(/Take Away-/i, "TAK-")
+      .replace(/Dine In-/i, "DIN-")
+      .replace(/Dine-In-/i, "DIN-")
+      .replace(/Online Delivery-/i, "OND-")
+      .replace(/Delivery-/i, "OND-");
+  };
+
+  // NEW: Helper to safely match kitchen (handles array or string)
+  const isKitchenMatch = (kitchen, selectedKitchen) => {
+    if (!kitchen || !selectedKitchen) return false;
+    if (Array.isArray(kitchen)) {
+      return kitchen.includes(selectedKitchen);
+    }
+    return kitchen === selectedKitchen;
+  };
+
+  // Helper to get fetched kitchen
+  const getFetchedKitchen = (type, mainItemName, subName, fallback = null) => {
+    const details = itemDetailsCache[mainItemName];
+    if (!details || !subName) {
+      console.log(`No details for ${mainItemName} or missing subName: ${subName}`);
+      return fallback;
+    }
+    const list = type === "addon" ? details.addons : details.combos;
+    const sub = list.find((s) => s.name1 === subName);
+    const kitchen = sub ? sub.kitchen : fallback;
+    console.log(`Fetched kitchen for ${type} ${mainItemName}/${subName}: ${kitchen}`);
+    return kitchen;
+  };
+
+  // Retry logic with exponential backoff
+  const retryRequest = async (fn, retries = 3, delay = 1000) => {
+    for (let i = 0; i < retries; i++) {
+      try {
+        return await fn();
+      } catch (error) {
+        console.error(`API call failed, retrying (${i + 1}/${retries})...`, error);
+        if (i === retries - 1) throw error;
+        await new Promise((resolve) => setTimeout(resolve, delay * Math.pow(2, i)));
+      }
+    }
+  };
+
+  // Fetch active orders - Refactored to useCallback for Socket.io
+  const fetchOrders = useCallback(async () => {
+    try {
+      setLoading(true);
+      const url = `${baseUrl}/api/activeorders`;
+      const response = await axios.get(url, { timeout: 8000 });
+      if (Array.isArray(response.data)) {
+        const ordersWithStatuses = response.data.map((order) => ({
+          ...order,
+          cartItems: Array.isArray(order.cartItems)
+            ? order.cartItems.map((item) => ({
+              ...item,
+              kitchenStatuses: item.kitchenStatuses || {},
+              isCombo: item.isCombo || item.is_combo_offer || false,
+              comboItems: item.comboItems || [],
+            }))
+            : [],
+        }));
+        setSavedOrders(ordersWithStatuses);
+        setErrorMessage("");
+      }
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+      setErrorMessage("Failed to fetch orders.");
+    } finally {
+      setLoading(false);
+    }
+  }, [baseUrl]);
+
+  // Fetch historical picked-up items
+  const fetchPickedUpItems = useCallback(async () => {
+    try {
+      const response = await retryRequest(() =>
+        axios.get(`${baseUrl}/api/picked-up-items`, { timeout: 8000 })
+      );
+      if (response.data.success && Array.isArray(response.data.pickedUpItems)) {
+        setPickedUpItems(response.data.pickedUpItems);
+      }
+    } catch (error) {
+      console.error("Error fetching picked-up items:", error);
+    }
+  }, [baseUrl]);
+
+  // Initial combined fetch
+  useEffect(() => {
+    if (configLoading) return;
+    const fetchAllData = async () => {
+      setLoading(true);
+      try {
+        await Promise.all([
+          fetchOrders(),
+          fetchPickedUpItems()
+        ]);
+      } catch (err) {
+        console.error("Error loading kitchen data:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAllData();
+  }, [baseUrl, configLoading, fetchOrders, fetchPickedUpItems]);
+
+  // Socket.io Integration
+  useEffect(() => {
+    let socketUrl = baseUrl;
+    if (!socketUrl) {
+      if (window.location.hostname !== 'localhost' && window.location.port !== '6034') {
+        socketUrl = `${window.location.protocol}//${window.location.hostname}:6034`;
+      } else {
+        socketUrl = window.location.origin;
+      }
+    }
+    const socket = io(socketUrl, {
+      transports: ['polling', 'websocket'],
+      reconnectionAttempts: 10,
+      reconnectionDelay: 1000
+    });
+    socket.on("connect", () => console.log("Connected to socket server"));
+    socket.on("order_update", () => fetchOrders());
+    return () => socket.disconnect();
+  }, [baseUrl, fetchOrders]);
+
+  // Fetch item details
+  useEffect(() => {
+    const fetchItemDetails = async () => {
+      const itemsToFetch = savedOrders
+        .filter((order) => Array.isArray(order.cartItems))
+        .flatMap((order) => order.cartItems)
+        .filter((item) => !itemDetailsCache[item.name]);
+      for (const item of itemsToFetch) {
+        try {
+          const itemName = encodeURIComponent(item.name);
+          const response = await retryRequest(() =>
+            axios.get(`${baseUrl}/api/items/${itemName}`, { timeout: 8000 })
+          );
+          console.log(`Fetched details for item ${item.name}:`, response.data);
+          if (response.data) {
+            const fetchedData = {
+              image: response.data.image || item.image || "/static/images/default-item.jpg",
+              addons: Array.isArray(response.data.addons)
+                ? response.data.addons.map((addon) => ({
+                  name1: addon.name1 || "Unknown",
+                  addon_image: addon.addon_image || "/static/images/default-item.jpg",
+                  kitchen: addon.kitchen || "Unknown",
+                }))
+                : [],
+              combos: Array.isArray(response.data.combos)
+                ? response.data.combos.map((combo) => ({
+                  name1: combo.name1 || "Unknown",
+                  combo_image: combo.combo_image || "/static/images/default-item.jpg",
+                  kitchen: combo.kitchen || "Unknown",
+                  size: combo.size || "M",
+                  spicy: combo.spicy || false,
+                }))
+                : [],
+            };
+            setItemDetailsCache((prev) => ({
+              ...prev,
+              [item.name]: fetchedData,
+            }));
+          }
+        } catch (error) {
+          console.error(`Error fetching details for item ${item.name}:`, error);
+          setItemDetailsCache((prev) => ({
+            ...prev,
+            [item.name]: {
+              image: item.image || "/static/images/default-item.jpg",
+              addons: [],
+              combos: [],
+            },
+          }));
+        }
+      }
+    };
+    if (savedOrders.length > 0) {
+      fetchItemDetails();
+    }
+  }, [savedOrders, baseUrl]);
+
+  // Derive kitchens (including from combo offer sub-items)
+  const kitchens = [
+    ...new Set(
+      savedOrders
+        .filter((order) => Array.isArray(order.cartItems))
+        .flatMap((order) =>
+          order.cartItems.reduce((acc, item) => {
+            const statuses = item.kitchenStatuses || {};
+            // Main item kitchen
+            if (item.kitchen && statuses[item.kitchen] !== "PickedUp") {
+              acc.push(item.kitchen);
+            }
+            // Addons
+            if (item.addonQuantities) {
+              Object.entries(item.addonQuantities).forEach(([addonName, qty]) => {
+                if (qty > 0) {
+                  const k = getFetchedKitchen("addon", item.name, addonName, item.addonVariants?.[addonName]?.kitchen);
+                  if (k && statuses[k] !== "PickedUp") {
+                    acc.push(k);
+                  }
+                }
+              });
+            }
+            // Combos
+            if (item.comboQuantities) {
+              Object.entries(item.comboQuantities).forEach(([comboName, qty]) => {
+                if (qty > 0) {
+                  const k = getFetchedKitchen("combo", item.name, comboName, item.comboVariants?.[comboName]?.kitchen);
+                  if (k && statuses[k] !== "PickedUp") {
+                    acc.push(k);
+                  }
+                }
+              });
+            }
+            // FIXED: For combo offers, add kitchens from sub-items (comboItems)
+            if (item.is_combo_offer && Array.isArray(item.comboItems)) {
+              item.comboItems.forEach((subItem) => {
+                if (subItem.kitchen && statuses[subItem.kitchen] !== "PickedUp") {
+                  acc.push(subItem.kitchen);
+                }
+              });
+            }
+            return acc;
+          }, [])
+        )
+        .flat()
+        .filter((kitchen) => kitchen && typeof kitchen === "string")
+    ),
+  ];
+
+  useEffect(() => {
+    console.log("Derived kitchens from savedOrders:", savedOrders, kitchens);
+    if (kitchens.length > 0 && (!selectedKitchen || !kitchens.includes(selectedKitchen))) {
+      setSelectedKitchen(kitchens[0]);
+    } else if (kitchens.length === 0 && selectedKitchen) {
+      console.log("No kitchens available, retaining selectedKitchen:", selectedKitchen);
+    }
+  }, [kitchens, selectedKitchen]);
+
+  // Filter orders for selected kitchen (including combo offer sub-items)
+  const filteredOrders = savedOrders
+    .map((order) => {
+      const relevantItems = Array.isArray(order.cartItems)
+        ? order.cartItems
+          .map((item) => {
+            let filteredAddons = {};
+            let filteredAddonVariants = {};
+            let filteredAddonCustomVariantsDetails = {};
+            if (item.addonQuantities && item.addonVariants) {
+              Object.entries(item.addonQuantities).forEach(([addonName, qty]) => {
+                if (qty > 0) {
+                  const addonKitchen = getFetchedKitchen(
+                    "addon",
+                    item.name,
+                    addonName,
+                    item.addonVariants[addonName]?.kitchen
+                  );
+                  if (isKitchenMatch(addonKitchen, selectedKitchen)) {
+                    filteredAddons[addonName] = qty;
+                    filteredAddonVariants[addonName] = {
+                      ...item.addonVariants[addonName],
+                      kitchen: addonKitchen,
+                    };
+                    filteredAddonCustomVariantsDetails[addonName] =
+                      item.addonCustomVariantsDetails?.[addonName] || {};
+                  }
+                }
+              });
+            }
+            let filteredCombos = {};
+            let filteredComboVariants = {};
+            let filteredComboCustomVariantsDetails = {};
+            if (item.comboQuantities && item.comboVariants) {
+              Object.entries(item.comboQuantities).forEach(([comboName, qty]) => {
+                if (qty > 0) {
+                  const comboKitchen = getFetchedKitchen(
+                    "combo",
+                    item.name,
+                    comboName,
+                    item.comboVariants[comboName]?.kitchen
+                  );
+                  if (isKitchenMatch(comboKitchen, selectedKitchen)) {
+                    filteredCombos[comboName] = qty;
+                    filteredComboVariants[comboName] = {
+                      ...item.comboVariants[comboName],
+                      kitchen: comboKitchen,
+                    };
+                    filteredComboCustomVariantsDetails[comboName] =
+                      item.comboCustomVariantsDetails?.[comboName] || {};
+                  }
+                }
+              });
+            }
+            // FIXED: For combo offers, filter sub-items (comboItems) based on their kitchen
+            let filteredComboOfferSubItems = [];
+            if (item.is_combo_offer && Array.isArray(item.comboItems)) {
+              filteredComboOfferSubItems = item.comboItems.filter((subItem) => isKitchenMatch(subItem.kitchen, selectedKitchen));
+            }
+            return {
+              ...item,
+              addonQuantities: filteredAddons,
+              addonVariants: filteredAddonVariants,
+              addonCustomVariantsDetails: filteredAddonCustomVariantsDetails,
+              comboQuantities: filteredCombos,
+              comboVariants: filteredComboVariants,
+              comboCustomVariantsDetails: filteredComboCustomVariantsDetails,
+              // FIXED: Preserve filtered sub-items for combo offers
+              filteredComboOfferSubItems,
+              displayInKitchen:
+                isKitchenMatch(item.kitchen, selectedKitchen) ||
+                Object.keys(filteredAddons).length > 0 ||
+                Object.keys(filteredCombos).length > 0 ||
+                filteredComboOfferSubItems.length > 0,
+              kitchenStatuses: item.kitchenStatuses || {},
+            };
+          })
+          .filter((item) => item.displayInKitchen && item.kitchenStatuses?.[selectedKitchen] !== "PickedUp")
+        : [];
+      return { ...order, cartItems: relevantItems };
+    })
+    .filter((order) => order.cartItems.length > 0);
+
+  // Formatting helpers
+  const formatItemVariants = (item) => {
+    const variants = [];
+    if (item.selectedSize) variants.push(`Size: ${item.selectedSize}`);
+    if (item.icePreference === "with_ice") variants.push(`Ice: With Ice`);
+    if (item.isSpicy === true) variants.push(`Spicy: Yes`);
+    if (item.sugarLevel && item.sugarLevel !== "medium") {
+      variants.push(
+        `Sugar: ${item.sugarLevel.charAt(0).toUpperCase() + item.sugarLevel.slice(1)}`
+      );
+    }
+    return variants.length > 0 ? `(${variants.join(", ")})` : "";
+  };
+
+  const formatCustomVariants = (customVariantsDetails) => {
+    if (!customVariantsDetails) return "";
+    const custom = Object.values(customVariantsDetails)
+      .map((v) => `${v.heading}: ${v.name}`)
+      .join(", ");
+    return custom ? `Custom: ${custom}` : "";
+  };
+
+  const formatAddonVariants = (addonVariants) => {
+    const variants = [];
+    if (addonVariants?.size) {
+      variants.push(`Size: ${addonVariants.size}`);
+    }
+    if (addonVariants?.spicy === true) {
+      variants.push(`Spicy: Yes`);
+    }
+    if (addonVariants?.sugar && addonVariants.sugar !== "medium") {
+      variants.push(
+        `Sugar: ${addonVariants.sugar.charAt(0).toUpperCase() + addonVariants.sugar.slice(1)}`
+      );
+    }
+    return variants.length > 0 ? `(${variants.join(", ")})` : "";
+  };
+
+  const formatAddonCustomVariants = (addonCustomVariantsDetails) => {
+    if (!addonCustomVariantsDetails) return "";
+    const custom = Object.values(addonCustomVariantsDetails)
+      .map((v) => `${v.heading}: ${v.name}`)
+      .join(", ");
+    return custom ? `Custom: ${custom}` : "";
+  };
+
+  const formatComboVariants = (comboVariants) => {
+    const variants = [];
+    if (comboVariants?.size) {
+      variants.push(`Size: ${comboVariants.size}`);
+    }
+    if (comboVariants?.spicy === true) {
+      variants.push(`Spicy: Yes`);
+    }
+    if (comboVariants?.sugar && comboVariants.sugar !== "medium") {
+      variants.push(
+        `Sugar: ${comboVariants.sugar.charAt(0).toUpperCase() + comboVariants.sugar.slice(1)}`
+      );
+    }
+    return variants.length > 0 ? `(${variants.join(", ")})` : "";
+  };
+
+  const formatComboCustomVariants = (comboCustomVariantsDetails) => {
+    if (!comboCustomVariantsDetails) return "";
+    const custom = Object.values(comboCustomVariantsDetails)
+      .map((v) => `${v.heading}: ${v.name}`)
+      .join(", ");
+    return custom ? `Custom: ${custom}` : "";
+  };
+
+  // NEW: Format notes for display
+  const formatNotes = (notes, key) => {
+    return notes?.[key] ? notes[key].trim() : '';
+  };
+
+  // FIXED: Updated helper to render combo offer sub-items in kitchen table (pass parent 'item' to access kitchenNotes)
+  const renderComboOfferSubItems = (filteredComboOfferSubItems, itemQuantity, item) => {
+    if (!filteredComboOfferSubItems || filteredComboOfferSubItems.length === 0) return null;
+    return filteredComboOfferSubItems.map((subItem, idx) => (
+      <div
+        key={`sub-${idx}`}
+        style={{ fontSize: "12px", color: "#555", marginLeft: "10px", padding: "4px", borderLeft: "2px solid #007bff" }}
+      >
+        - Sub-Item: {subItem.name} <span style={{ fontSize: "10px", color: "#888", fontStyle: "italic" }}>({subItem.category || "Combo Sub-Item"})</span> x{itemQuantity} (Kitchen: {subItem.kitchen})
+        <div>Status: {subItem.status || "Pending"}</div>
+        {/* NEW: Kitchen Note for Sub-Item if available */}
+        {formatNotes(item.kitchenNotes, subItem.name) && (
+          <div style={{ fontSize: "11px", color: "#007bff", marginTop: "2px" }}>
+            Note: {formatNotes(item.kitchenNotes, subItem.name)}
+          </div>
+        )}
+      </div>
+    ));
+  };
+
+  // Popup data logic
+  const getLastHourItems = () => {
+    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+    // Filter by last hour first
+    let filteredItems = (pickedUpItems || []).filter((entry) => {
+      const pickupTime = new Date(entry.pickupTime);
+      return pickupTime >= oneHourAgo;
+    });
+
+    if (lastHourSearchDate) {
+      // STRICT FILTER: Show ONLY items matching the date
+      filteredItems = filteredItems.filter((entry) => {
+        const itemDate = new Date(entry.pickupTime);
+        const itemDateStr = itemDate.getFullYear() + '-' + String(itemDate.getMonth() + 1).padStart(2, '0') + '-' + String(itemDate.getDate()).padStart(2, '0');
+        return itemDateStr === lastHourSearchDate;
+      });
+    }
+
+    return filteredItems.sort((a, b) => new Date(b.pickupTime) - new Date(a.pickupTime));
+  };
+
+  const getAllPickedUpItems = () => {
+    let filteredItems = (pickedUpItems || []).slice();
+
+    if (allStatusSearchDate) {
+      // STRICT FILTER: Show ONLY items matching the date
+      filteredItems = filteredItems.filter((entry) => {
+        const itemDate = new Date(entry.pickupTime);
+        const itemDateStr = itemDate.getFullYear() + '-' + String(itemDate.getMonth() + 1).padStart(2, '0') + '-' + String(itemDate.getDate()).padStart(2, '0');
+        return itemDateStr === allStatusSearchDate;
+      });
+    }
+
+    return filteredItems.sort((a, b) => new Date(b.pickupTime) - new Date(a.pickupTime));
+  };
+
+  // FIXED: Updated to handle combo offer sub-items in flattened list
+  const getFlattenedSubItems = (entry) => {
+    const allItems = Array.isArray(entry.items) ? entry.items : [entry];
+    const subItems = [];
+    allItems.forEach((item) => {
+      subItems.push({
+        id: `main-${item.id || Math.random()}`,
+        type: "main",
+        name: item.item_name || "Unknown Item",
+        quantity: item.quantity || 1,
+        category: item.category || "N/A",
+        kitchen: item.kitchen || "N/A",
+      });
+      if (item.addons && Array.isArray(item.addons)) {
+        item.addons.forEach((addon) => {
+          if (addon.addon_quantity > 0) {
+            subItems.push({
+              id: `addon-${addon.name1 || Math.random()}`,
+              type: "addon",
+              name: `+ Addon: ${addon.name1}`,
+              quantity: addon.addon_quantity,
+              // NEW: Use populated category for addon
+              category: item.addonCategories?.[addon.name1] || "Addon",
+              kitchen: addon.kitchen || "N/A",
+            });
+          }
+        });
+      }
+      if (item.selectedCombos && Array.isArray(item.selectedCombos)) {
+        item.selectedCombos.forEach((combo) => {
+          const comboQty = combo.combo_quantity || 1;
+          if (comboQty > 0) {
+            const spicy = combo.isSpicy ? " (Spicy)" : "";
+            subItems.push({
+              id: `combo-${combo.name1 || Math.random()}`,
+              type: "combo",
+              name: `+ Combo: ${combo.name1} (${combo.size || "M"})${spicy}`,
+              quantity: comboQty,
+              // NEW: Use populated category for combo
+              category: item.comboCategories?.[combo.name1] || "Combo",
+              kitchen: combo.kitchen || "N/A",
+            });
+          }
+        });
+      }
+      // FIXED: Add sub-items from combo offers
+      if (item.is_combo_offer && Array.isArray(item.comboItems)) {
+        item.comboItems.forEach((subItem) => {
+          subItems.push({
+            id: `combooffer-sub-${subItem.name || Math.random()}`,
+            type: "combooffer-sub",
+            name: `- Combo Sub: ${subItem.name}`,
+            quantity: item.quantity || 1,
+            // NEW: Use populated category for sub-item
+            category: subItem.category || "Combo Sub-Item",
+            kitchen: subItem.kitchen || "N/A",
+          });
+        });
+      }
+    });
+    return subItems;
+  };
+
+  // Action handlers
+  const handleMarkPrepared = async (orderId, itemId, kitchen) => {
+    try {
+      const response = await retryRequest(() =>
+        axios.post(
+          `${baseUrl}/api/activeorders/${orderId}/items/${itemId}/mark-prepared`,
+          { kitchen },
+          { headers: { "Content-Type": "application/json" }, timeout: 8000 }
+        )
+      );
+      if (response.data.success) {
+        setSavedOrders((prev) =>
+          prev.map((order) =>
+            order.orderId === orderId
+              ? {
+                ...order,
+                cartItems: order.cartItems.map((item) =>
+                  item.id === itemId
+                    ? {
+                      ...item,
+                      kitchenStatuses: {
+                        ...item.kitchenStatuses,
+                        [kitchen]: response.data.status,
+                      },
+                    }
+                    : item
+                ),
+              }
+              : order
+          )
+        );
+      } else {
+        console.error("Failed to mark as prepared:", response.data);
+      }
+    } catch (error) {
+      console.error("Error marking as prepared:", error);
+    }
+  };
+
+  const handlePickUp = async (orderId, itemId) => {
+    try {
+      setLoading(true);
+      const order = savedOrders.find((o) => o.orderId === orderId);
+      const pickedItem = order?.cartItems.find((item) => item.id === itemId);
+      if (pickedItem && pickedItem.kitchenStatuses?.[selectedKitchen] === "Prepared") {
+        const response = await retryRequest(() =>
+          axios.post(
+            `${baseUrl}/api/activeorders/${orderId}/items/${itemId}/mark-pickedup`,
+            { kitchen: selectedKitchen },
+            { headers: { "Content-Type": "application/json" }, timeout: 8000 }
+          )
+        );
+        if (response.data.success) {
+          setSavedOrders((prev) =>
+            prev.map((order) =>
+              order.orderId === orderId
+                ? {
+                  ...order,
+                  cartItems: order.cartItems.map((item) =>
+                    item.id === itemId
+                      ? {
+                        ...item,
+                        kitchenStatuses: {
+                          ...item.kitchenStatuses,
+                          [selectedKitchen]: "PickedUp",
+                        },
+                      }
+                      : item
+                  ),
+                }
+                : order
+            )
+          );
+          await fetchPickedUpItems();
+          console.log("Item marked as PickedUp, status preserved.");
+        } else {
+          console.error("Failed to mark as picked up:", response.data);
+        }
+      } else {
+        console.error("Item not in Prepared status");
+      }
+    } catch (error) {
+      console.error("Error marking as picked up:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // FIXED: Updated bulk pickup to handle combo offer sub-items if they have separate IDs/statuses
+  const handleBulkPickUp = async () => {
+    try {
+      setLoading(true);
+      for (const orderId of selectedCustomers) {
+        const order = savedOrders.find((o) => o.orderId === orderId);
+        if (!order) continue;
+        const itemsToPickUp = order.cartItems.filter(
+          (item) =>
+            isKitchenMatch(item.kitchen, selectedKitchen) ||
+            Object.values(item.addonVariants || {}).some(
+              (addon) => isKitchenMatch(addon.kitchen, selectedKitchen) && item.addonQuantities?.[addon.name1]
+            ) ||
+            Object.values(item.comboVariants || {}).some(
+              (combo) => isKitchenMatch(combo.kitchen, selectedKitchen) && item.comboQuantities?.[combo.name1]
+            ) ||
+            // FIXED: Include combo offer sub-items
+            (item.is_combo_offer && item.filteredComboOfferSubItems && item.filteredComboOfferSubItems.length > 0)
+        );
+        for (const item of itemsToPickUp) {
+          if (item.kitchenStatuses?.[selectedKitchen] === "Prepared") {
+            await handlePickUp(orderId, item.id);
+          } else {
+            console.log(`Skipping item ${item.id} in order ${orderId} because status is ${item.kitchenStatuses?.[selectedKitchen] || 'Pending'}`);
+          }
+          // FIXED: If combo offer, handle sub-items (assuming they share the main item's status for simplicity; extend if separate)
+          if (item.is_combo_offer && item.filteredComboOfferSubItems) {
+            // For now, assume sub-items use main status; if separate, add logic here
+          }
+        }
+      }
+      setSelectedCustomers([]);
+    } catch (error) {
+      console.error("Error during bulk pickup:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCustomerCheckboxChange = (orderId) => {
+    setSelectedCustomers((prev) =>
+      prev.includes(orderId) ? prev.filter((id) => id !== orderId) : [...prev, orderId]
+    );
+  };
+
+  // NEW: Manual refresh handler for on-demand fetch
+  const handleRefresh = () => {
+    fetchOrders(); // Reuse the existing fetch function
+  };
+
+  // Style helpers
+  const getRowStyle = (status) => {
+    switch (status || "Pending") {
+      case "Pending":
+        return { backgroundColor: "#ffcccc", color: "#333" };
+      case "Preparing":
+        return { backgroundColor: "#fff3cd", color: "#333" };
+      case "Prepared":
+        return { backgroundColor: "#d4edda", color: "#333" };
+      case "PickedUp":
+        return { backgroundColor: "#41C2E1", color: "white" };
+      default:
+        return {};
+    }
+  };
+
+  const getHighlightStyle = (pickupTime, searchDate) => {
+    if (searchDate) {
+      if (pickupTime?.startsWith(searchDate)) {
+        return { backgroundColor: "#87CEEB" };
+      }
+    }
+    return {};
+  };
+
+  const getCorrectImageUrl = (imagePath) => {
+    if (!imagePath || imagePath.includes("placeholder.png")) return "/static/images/default-item.jpg";
+    if (imagePath.startsWith("http")) return imagePath;
+    if (imagePath.startsWith("/")) return baseUrl + imagePath;
+    return `${baseUrl}/api/images/${imagePath}`;
+  };
+
+  // FIXED: Updated to include images for combo offer sub-items
+  const getAddonComboImages = (item) => {
+    const images = [];
+    const itemDetails = itemDetailsCache[item.name] || {
+      image: item.image || "/static/images/default-item.jpg",
+      addons: [],
+      combos: [],
+    };
+    if (isKitchenMatch(item.kitchen, selectedKitchen)) {
+      images.push({
+        src: getCorrectImageUrl(item.image || itemDetails.image),
+        label: item.name || "Item",
+        type: "item",
+        status: item.kitchenStatuses?.[selectedKitchen] || "Pending",
+      });
+    }
+    Object.entries(item.addonQuantities || {})
+      .filter(([addonName, qty]) => qty > 0)
+      .forEach(([addonName]) => {
+        const addon = itemDetails.addons.find((a) => a.name1 === addonName) || {};
+        const addonImage =
+          item.addonImages?.[addonName] ||
+          addon.addon_image || "/static/images/default-item.jpg";
+        images.push({
+          src: getCorrectImageUrl(addonImage),
+          label: addonName || "Addon",
+          type: "addon",
+          status: item.kitchenStatuses?.[selectedKitchen] || "Pending",
+        });
+      });
+    Object.entries(item.comboQuantities || {})
+      .filter(([comboName, qty]) => qty > 0)
+      .forEach(([comboName]) => {
+        const combo = itemDetails.combos.find((c) => c.name1 === comboName) || {};
+        const comboImage =
+          item.comboImages?.[comboName] ||
+          combo.combo_image || "/static/images/default-item.jpg";
+        images.push({
+          src: getCorrectImageUrl(comboImage),
+          label: comboName || "Combo",
+          type: "combo",
+          status: item.kitchenStatuses?.[selectedKitchen] || "Pending",
+        });
+      });
+    // FIXED: Add images for combo offer sub-items
+    if (item.is_combo_offer && Array.isArray(item.filteredComboOfferSubItems)) {
+      item.filteredComboOfferSubItems.forEach((subItem) => {
+        images.push({
+          src: getCorrectImageUrl(subItem.image || "/static/images/default-item.jpg"),
+          label: subItem.name || "Sub-Item",
+          type: "combooffer-sub",
+          status: item.kitchenStatuses?.[subItem.kitchen] || "Pending", // Use sub-kitchen if available
+        });
+      });
+    }
+    return images;
+  };
+
+  return (
+    <ErrorBoundary>
+      <div style={{ marginTop: "24px", padding: "0 15px", position: "relative" }}>
+        {loading && (
+          <div style={{ textAlign: "center", fontSize: "18px" }}>Loading...</div>
+        )}
+        {errorMessage && (
+          <div
+            style={{
+              backgroundColor: "#f8d7da",
+              color: "#721c24",
+              padding: "10px",
+              marginBottom: "16px",
+              borderRadius: "4px",
+              textAlign: "center",
+            }}
+          >
+            {errorMessage}
+            <button
+              style={{
+                marginLeft: "10px",
+                padding: "4px 8px",
+                backgroundColor: "#721c24",
+                color: "white",
+                border: "none",
+                borderRadius: "4px",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                setErrorMessage("");
+                fetchPickedUpItems();
+              }}
+            >
+              Retry
+            </button>
+          </div>
+        )}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: "16px",
+          }}
+        >
+
+
+          <h3 style={{ textAlign: "center", flex: 1, margin: 0 }}>
+            Kitchen Services
+          </h3>
+          <div style={{ display: "flex", gap: "8px" }}>
+            <button
+              style={{
+                padding: "6px 12px",
+                backgroundColor: "#17a2b8",
+                color: "white",
+                border: "none",
+                borderRadius: "4px",
+                cursor: "pointer",
+              }}
+              onClick={() => setShowStatusPopup(true)}
+            >
+              Status (Last 1 Hour)
+            </button>
+            <button
+              style={{
+                padding: "6px 12px",
+                backgroundColor: "#ffc107",
+                color: "black",
+                border: "none",
+                borderRadius: "4px",
+                cursor: "pointer",
+              }}
+              onClick={() => setShowAllStatusPopup(true)}
+            >
+              All Status
+            </button>
+          </div>
+        </div>
+        <div style={{ display: "flex", marginBottom: "16px", gap: "12px" }}>
+          {kitchens.length > 0 ? (
+            kitchens.map((kitchen) => (
+              <button
+                key={kitchen}
+                style={{
+                  padding: "4px 8px",
+                  backgroundColor: selectedKitchen === kitchen ? "#007bff" : "transparent",
+                  color: selectedKitchen === kitchen ? "white" : "#007bff",
+                  border: "1px solid #007bff",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  fontSize: "14px",
+                }}
+                onClick={() => setSelectedKitchen(kitchen)}
+              >
+                {kitchen}
+              </button>
+            ))
+          ) : (
+            <p style={{ fontSize: "16px" }}>No active kitchens</p>
+          )}
+        </div>
+        <h5 style={{ marginBottom: "16px" }}>
+          Current Orders - {selectedKitchen || "Select a Kitchen"}
+        </h5>
+        {filteredOrders.length === 0 ? (
+          <p style={{ fontSize: "16px" }}>
+            {selectedKitchen ? "No orders for this kitchen." : "Please select a kitchen."}
+          </p>
+        ) : (
+          <div style={{ overflowX: "auto" }}>
+            <div style={{ marginBottom: "16px", textAlign: "right" }}>
+              <button
+                style={{
+                  padding: "6px 12px",
+                  backgroundColor: selectedCustomers.length > 0 ? "#28a745" : "#6c757d",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: selectedCustomers.length > 0 ? "pointer" : "not-allowed",
+                }}
+                onClick={handleBulkPickUp}
+                disabled={selectedCustomers.length === 0}
+              >
+                Mark Selected as Picked Up
+              </button>
+            </div>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "14px" }}>
+              <thead>
+                <tr>
+                  <th style={{ border: "1px solid #ddd", padding: "8px" }}>Customer</th>
+                  <th style={{ border: "1px solid #ddd", padding: "8px" }}>Order No</th>
+                  <th style={{ border: "1px solid #ddd", padding: "8px" }}>Order Type</th>
+                  <th style={{ border: "1px solid #ddd", padding: "8px" }}>Table</th>
+                  <th style={{ border: "1px solid #ddd", padding: "8px" }}>Item & Addons</th>
+                  <th style={{ border: "1px solid #ddd", padding: "8px" }}>Combos</th>
+                  <th style={{ border: "1px solid #ddd", padding: "8px" }}>Combo Offer Sub-Items</th> {/* FIXED: New column for combo offer sub-items */}
+                  <th style={{ border: "1px solid #ddd", padding: "8px" }}>Images</th>
+                  <th style={{ border: "1px solid #ddd", padding: "8px" }}>Quantity</th>
+                  <th style={{ border: "1px solid #ddd", padding: "8px" }}>Category</th>
+                  <th style={{ border: "1px solid #ddd", padding: "8px" }}>Status</th>
+                  {/* NEW: Kitchen Note Column */}
+                  <th style={{ border: "1px solid #ddd", padding: "8px" }}>Kitchen Note</th>
+                  <th style={{ border: "1px solid #ddd", padding: "8px" }}>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredOrders.map((order) =>
+                  order.cartItems.map((item, itemIndex) => (
+                    <tr
+                      key={`${order.orderId}-${item.id}`}
+                      style={getRowStyle(item.kitchenStatuses?.[selectedKitchen])}
+                    >
+                      {itemIndex === 0 && (
+                        <>
+                          <td
+                            rowSpan={order.cartItems.length}
+                            style={{ border: "1px solid #ddd", padding: "8px", verticalAlign: "top" }}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={selectedCustomers.includes(order.orderId)}
+                              onChange={() => handleCustomerCheckboxChange(order.orderId)}
+                              style={{ marginRight: "8px" }}
+                            />
+                            {order.customerName || "Unknown"}
+                          </td>
+                          <td
+                            rowSpan={order.cartItems.length}
+                            style={{ border: "1px solid #ddd", padding: "8px", verticalAlign: "top" }}
+                          >
+                            {formatTokenNo(order.orderNo || "N/A")}
+                          </td>
+                          <td
+                            rowSpan={order.cartItems.length}
+                            style={{ border: "1px solid #ddd", padding: "8px", verticalAlign: "top" }}
+                          >
+                            {normalizeOrderType(order.orderType) || "N/A"}
+                          </td>
+                          <td
+                            rowSpan={order.cartItems.length}
+                            style={{ border: "1px solid #ddd", padding: "8px", verticalAlign: "top" }}
+                          >
+                            {order.orderType === "Dine In" ? order.tableNumber || "N/A" : "-"}
+                          </td>
+                        </>
+                      )}
+                      <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+                        {isKitchenMatch(item.kitchen, selectedKitchen) && (
+                          <div>
+                            <strong>{item.name}</strong> {formatItemVariants(item)}{" "}
+                            {formatCustomVariants(item.customVariantsDetails)}
+                            {/* NEW: Kitchen Note for Item */}
+                            {formatNotes(item.kitchenNotes, 'item') && (
+                              <div style={{ fontSize: "11px", color: "#007bff", marginTop: "4px" }}>
+                                Note: {formatNotes(item.kitchenNotes, 'item')}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                        {Object.entries(item.addonQuantities || {}).map(([addonName, qty]) => (
+                          qty > 0 && (
+                            <div
+                              key={addonName}
+                              style={{ fontSize: "12px", color: "#555", marginLeft: "10px" }}
+                            >
+                              + Addon: {addonName} <span style={{ fontSize: "10px", color: "#888", fontStyle: "italic" }}>({item.addonCategories?.[addonName] || "Addon"})</span> {formatAddonVariants(item.addonVariants[addonName])}{" "}
+                              {formatAddonCustomVariants(item.addonCustomVariantsDetails?.[addonName])} x{qty}
+                              {/* NEW: Kitchen Note for Addon */}
+                              {formatNotes(item.kitchenNotes, addonName) && (
+                                <div style={{ fontSize: "11px", color: "#007bff", marginTop: "2px" }}>
+                                  Note: {formatNotes(item.kitchenNotes, addonName)}
+                                </div>
+                              )}
+                            </div>
+                          )
+                        ))}
+                      </td>
+                      <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+                        {Object.entries(item.comboQuantities || {}).map(([comboName, qty]) => (
+                          qty > 0 && (
+                            <div
+                              key={comboName}
+                              style={{ fontSize: "12px", color: "#555", marginLeft: "10px" }}
+                            >
+                              + Combo: {comboName} <span style={{ fontSize: "10px", color: "#888", fontStyle: "italic" }}>({item.comboCategories?.[comboName] || "Combo"})</span> {formatComboVariants(item.comboVariants[comboName])}{" "}
+                              {formatComboCustomVariants(item.comboCustomVariantsDetails?.[comboName])} x{qty}
+                              {/* NEW: Kitchen Note for Combo */}
+                              {formatNotes(item.kitchenNotes, comboName) && (
+                                <div style={{ fontSize: "11px", color: "#007bff", marginTop: "2px" }}>
+                                  Note: {formatNotes(item.kitchenNotes, comboName)}
+                                </div>
+                              )}
+                            </div>
+                          )
+                        ))}
+                      </td>
+                      {/* FIXED: New column to display combo offer sub-items (pass item as third arg) */}
+                      <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+                        {item.is_combo_offer && renderComboOfferSubItems(item.filteredComboOfferSubItems, item.quantity, item)}
+                      </td>
+                      <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: "5px" }}>
+                          {getAddonComboImages(item).map((image, idx) => (
+                            <div key={idx} style={{ position: "relative" }}>
+                              <img
+                                src={image.src}
+                                style={{
+                                  width: image.type === "item" ? "70px" : "50px",
+                                  height: "50px",
+                                  objectFit: "cover",
+                                  border: "1px solid #ddd",
+                                  borderRadius: "4px",
+                                }}
+                                alt={image.label}
+                                onError={(e) => (e.target.src = "/static/images/default-item.jpg")}
+                              />
+                              <span
+                                style={{
+                                  position: "absolute",
+                                  top: "-10px",
+                                  left: "0",
+                                  backgroundColor: "rgba(0,0,0,0.7)",
+                                  color: "white",
+                                  fontSize: "10px",
+                                  padding: "2px 4px",
+                                  borderRadius: "2px",
+                                }}
+                              >
+                                {image.type}
+                              </span>
+                              {image.status === "PickedUp" && (
+                                <span
+                                  style={{
+                                    position: "absolute",
+                                    top: "2px",
+                                    right: "2px",
+                                    backgroundColor: "green",
+                                    color: "white",
+                                    fontSize: "12px",
+                                    width: "20px",
+                                    height: "20px",
+                                    borderRadius: "50%",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                  }}
+                                >
+                                  ✓
+                                </span>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </td>
+                      <td style={{ border: "1px solid #ddd", padding: "8px" }}>{item.quantity}</td>
+                      <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+                        {item.category || "N/A"}
+                      </td>
+                      <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+                        {item.kitchenStatuses?.[selectedKitchen] || "Pending"}
+                      </td>
+                      {/* NEW: Dedicated Kitchen Note Column */}
+                      <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+                        <strong>Kitchen Notes:</strong><br />
+                        {Object.entries(item.kitchenNotes || {}).map(([key, note]) => (
+                          note?.trim() ? (
+                            <div key={key} style={{ fontSize: "11px", color: "#007bff", marginTop: "2px" }}>
+                              {key}: {note.trim()}
+                            </div>
+                          ) : null
+                        ))}
+                        {Object.values(item.kitchenNotes || {}).every(n => !n?.trim()) && <em>No notes</em>}
+                      </td>
+                      <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+                        {item.displayInKitchen &&
+                          item.kitchenStatuses?.[selectedKitchen] !== "Prepared" &&
+                          item.kitchenStatuses?.[selectedKitchen] !== "PickedUp" && (
+                            <button
+                              style={{
+                                padding: "6px 12px",
+                                backgroundColor: "#007bff",
+                                color: "white",
+                                border: "none",
+                                borderRadius: "4px",
+                                cursor: "pointer",
+                              }}
+                              onClick={() => handleMarkPrepared(order.orderId, item.id, selectedKitchen)}
+                            >
+                              Mark as Prepared
+                            </button>
+                          )}
+                        {item.kitchenStatuses?.[selectedKitchen] === "Prepared" && (
+                          <button
+                            style={{
+                              padding: "6px 12px",
+                              backgroundColor: "#28a745",
+                              color: "white",
+                              border: "none",
+                              borderRadius: "4px",
+                              cursor: "pointer",
+                              marginLeft: "8px",
+                            }}
+                            onClick={() => handlePickUp(order.orderId, item.id)}
+                          >
+                            Mark as Picked Up
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        )}
+        {/* FIXED: Changed from type="month" to type="date" and simplified filter logic */}
+        {showStatusPopup && (
+          <div
+            style={{
+              position: "fixed",
+              top: "0",
+              left: "0",
+              right: "0",
+              bottom: "0",
+              backgroundColor: "rgba(0,0,0,0.5)",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              zIndex: 1000,
+            }}
+          >
+            <div
+              style={{
+                backgroundColor: "white",
+                padding: "20px",
+                borderRadius: "8px",
+                width: "90%",
+                maxWidth: "800px",
+                maxHeight: "80%",
+                overflowY: "auto",
+                position: "relative",
+              }}
+            >
+              <h3 style={{ marginBottom: "16px" }}>Last Hour Pickup Status</h3>
+              <input
+                type="date"
+                value={lastHourSearchDate}
+                onChange={(e) => setLastHourSearchDate(e.target.value)}
+                style={{ marginBottom: "16px", padding: "4px" }}
+              />
+              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "14px" }}>
+                <thead>
+                  <tr>
+                    <th style={{ border: "1px solid #ddd", padding: "8px" }}>Order No</th>
+                    <th style={{ border: "1px solid #ddd", padding: "8px" }}>Customer</th>
+                    <th style={{ border: "1px solid #ddd", padding: "8px" }}>Item</th>
+                    <th style={{ border: "1px solid #ddd", padding: "8px" }}>Quantity</th>
+                    <th style={{ border: "1px solid #ddd", padding: "8px" }}>Category</th>
+                    <th style={{ border: "1px solid #ddd", padding: "8px" }}>Kitchen</th>
+                    <th style={{ border: "1px solid #ddd", padding: "8px" }}>Pickup Time</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {getLastHourItems().map((entry, index) =>
+                    getFlattenedSubItems(entry).map((subItem, subIndex) => (
+                      <tr
+                        key={`${index}-${subIndex}`}
+                        style={getHighlightStyle(entry.pickupTime, lastHourSearchDate)}
+                      >
+                        <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+                          {formatTokenNo(entry.orderNo || "N/A")}
+                        </td>
+                        <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+                          {entry.customerName || "Unknown"}
+                        </td>
+                        <td style={{ border: "1px solid #ddd", padding: "8px" }}>{subItem.name}</td>
+                        <td style={{ border: "1px solid #ddd", padding: "8px" }}>{subItem.quantity}</td>
+                        <td style={{ border: "1px solid #ddd", padding: "8px" }}>{subItem.category}</td>
+                        <td style={{ border: "1px solid #ddd", padding: "8px" }}>{subItem.kitchen}</td>
+                        <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+                          {new Date(entry.pickupTime).toLocaleString()}
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+              <button
+                style={{
+                  position: "absolute",
+                  top: "10px",
+                  right: "10px",
+                  padding: "6px 12px",
+                  backgroundColor: "#dc3545",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  fontSize: "18px",
+                  lineHeight: "1",
+                }}
+                onClick={() => setShowStatusPopup(false)}
+              >
+                ×
+              </button>
+            </div>
+          </div>
+        )}
+        {/* FIXED: Changed from type="month" to type="date" and simplified filter logic */}
+        {showAllStatusPopup && (
+          <div
+            style={{
+              position: "fixed",
+              top: "0",
+              left: "0",
+              right: "0",
+              bottom: "0",
+              backgroundColor: "rgba(0,0,0,0.5)",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              zIndex: 1000,
+            }}
+          >
+            <div
+              style={{
+                backgroundColor: "white",
+                padding: "20px",
+                borderRadius: "8px",
+                width: "90%",
+                maxWidth: "800px",
+                maxHeight: "80%",
+                overflowY: "auto",
+                position: "relative",
+              }}
+            >
+              <h3 style={{ marginBottom: "16px" }}>All Pickup Status</h3>
+              <input
+                type="date"
+                value={allStatusSearchDate}
+                onChange={(e) => setAllStatusSearchDate(e.target.value)}
+                style={{ marginBottom: "16px", padding: "4px" }}
+              />
+              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "14px" }}>
+                <thead>
+                  <tr>
+                    <th style={{ border: "1px solid #ddd", padding: "8px" }}>Order No</th>
+                    <th style={{ border: "1px solid #ddd", padding: "8px" }}>Customer</th>
+                    <th style={{ border: "1px solid #ddd", padding: "8px" }}>Item</th>
+                    <th style={{ border: "1px solid #ddd", padding: "8px" }}>Quantity</th>
+                    <th style={{ border: "1px solid #ddd", padding: "8px" }}>Category</th>
+                    <th style={{ border: "1px solid #ddd", padding: "8px" }}>Kitchen</th>
+                    <th style={{ border: "1px solid #ddd", padding: "8px" }}>Pickup Time</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {getAllPickedUpItems().map((entry, index) =>
+                    getFlattenedSubItems(entry).map((subItem, subIndex) => (
+                      <tr
+                        key={`${index}-${subIndex}`}
+                        style={getHighlightStyle(entry.pickupTime, allStatusSearchDate)}
+                      >
+                        <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+                          {formatTokenNo(entry.orderNo || "N/A")}
+                        </td>
+                        <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+                          {entry.customerName || "Unknown"}
+                        </td>
+                        <td style={{ border: "1px solid #ddd", padding: "8px" }}>{subItem.name}</td>
+                        <td style={{ border: "1px solid #ddd", padding: "8px" }}>{subItem.quantity}</td>
+                        <td style={{ border: "1px solid #ddd", padding: "8px" }}>{subItem.category}</td>
+                        <td style={{ border: "1px solid #ddd", padding: "8px" }}>{subItem.kitchen}</td>
+                        <td style={{ border: "1px solid #ddd", padding: "8px" }}>
+                          {new Date(entry.pickupTime).toLocaleString()}
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+              <button
+                style={{
+                  position: "absolute",
+                  top: "10px",
+                  right: "10px",
+                  padding: "6px 12px",
+                  backgroundColor: "#dc3545",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  fontSize: "18px",
+                  lineHeight: "1",
+                }}
+                onClick={() => setShowAllStatusPopup(false)}
+              >
+                ×
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    </ErrorBoundary>
+  );
+}
+
+export default Kitchen;

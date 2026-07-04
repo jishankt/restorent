@@ -1,0 +1,93 @@
+{
+  "company_names": [
+    "Global"
+  ],
+  "fields": [
+    {
+      "id": "sec_general",
+      "idx": 0,
+      "is_default": true,
+      "label": "General Information",
+      "mandatory": false,
+      "type": "Section Break"
+    },
+    {
+      "id": "customer_name",
+      "idx": 1,
+      "is_default": true,
+      "label": "Customer Name",
+      "mandatory": true,
+      "type": "Data"
+    },
+    {
+      "id": "phone_number",
+      "idx": 2,
+      "is_default": true,
+      "label": "Phone Number",
+      "mandatory": true,
+      "type": "Data"
+    },
+    {
+      "id": "whatsapp_number",
+      "idx": 3,
+      "is_default": true,
+      "label": "WhatsApp Number",
+      "mandatory": false,
+      "type": "Data"
+    },
+    {
+      "id": "email",
+      "idx": 4,
+      "is_default": true,
+      "label": "Email",
+      "mandatory": false,
+      "type": "Data"
+    },
+    {
+      "allow_create_new": false,
+      "hidden": true,
+      "id": "date",
+      "idx": 5,
+      "is_default": false,
+      "label": "Date",
+      "link_doctype": "",
+      "mandatory": false,
+      "type": "Date"
+    },
+    {
+      "id": "sec_address",
+      "idx": 6,
+      "is_default": true,
+      "label": "Address",
+      "mandatory": false,
+      "type": "Section Break"
+    },
+    {
+      "id": "address_data",
+      "idx": 7,
+      "is_default": true,
+      "label": "Address Data",
+      "link_doctype": "Address Structure",
+      "mandatory": false,
+      "type": "Table"
+    },
+    {
+      "id": "sec_group",
+      "idx": 8,
+      "is_default": true,
+      "label": "Customer Group",
+      "mandatory": false,
+      "type": "Section Break"
+    },
+    {
+      "id": "customer_group",
+      "idx": 9,
+      "is_default": true,
+      "label": "Customer Group",
+      "link_doctype": "Customer Group",
+      "mandatory": false,
+      "type": "Table"
+    }
+  ],
+  "name": "Customer"
+}

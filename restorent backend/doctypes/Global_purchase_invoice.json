@@ -1,0 +1,156 @@
+{
+  "branch": "All Branches",
+  "branch_name": "All Branches",
+  "branch_names": [
+    "All Branches"
+  ],
+  "company_names": [
+    "Global"
+  ],
+  "fields": [
+    {
+      "hidden": false,
+      "id": "sec_pi_basic",
+      "is_default": true,
+      "label": "Basic Details",
+      "type": "Section Break",
+      "idx": 0
+    },
+    {
+      "hidden": false,
+      "id": "isDirectPurchase",
+      "is_default": true,
+      "label": "Direct Purchase",
+      "mandatory": false,
+      "type": "Check",
+      "idx": 1
+    },
+    {
+      "hidden": false,
+      "id": "series",
+      "is_default": true,
+      "label": "Series",
+      "mandatory": true,
+      "type": "Data",
+      "idx": 2
+    },
+    {
+      "hidden": false,
+      "id": "date",
+      "is_default": true,
+      "label": "Date",
+      "mandatory": true,
+      "type": "Date",
+      "idx": 3
+    },
+    {
+      "hidden": false,
+      "id": "company",
+      "is_default": true,
+      "label": "Company",
+      "mandatory": true,
+      "type": "Link",
+      "idx": 4
+    },
+    {
+      "hidden": false,
+      "id": "branch_name",
+      "is_default": true,
+      "label": "Branch",
+      "mandatory": true,
+      "type": "Link",
+      "idx": 5
+    },
+    {
+      "hidden": false,
+      "id": "supplierId",
+      "is_default": true,
+      "label": "Supplier",
+      "mandatory": true,
+      "type": "Link",
+      "idx": 6
+    },
+    {
+      "hidden": false,
+      "id": "supplierCode",
+      "is_default": true,
+      "label": "Supplier Code",
+      "mandatory": false,
+      "type": "Data",
+      "idx": 7
+    },
+    {
+      "hidden": false,
+      "id": "currency",
+      "is_default": true,
+      "label": "Currency",
+      "mandatory": false,
+      "type": "Select",
+      "idx": 8
+    },
+    {
+      "hidden": false,
+      "id": "supplierGroup",
+      "is_default": true,
+      "label": "Supplier Group",
+      "mandatory": false,
+      "type": "Select",
+      "idx": 9
+    },
+    {
+      "hidden": false,
+      "id": "poId",
+      "is_default": true,
+      "label": "Purchase Order",
+      "mandatory": false,
+      "type": "Link",
+      "idx": 10
+    },
+    {
+      "hidden": false,
+      "id": "prId",
+      "is_default": true,
+      "label": "Purchase Receipt",
+      "mandatory": false,
+      "type": "Link",
+      "idx": 11
+    },
+    {
+      "hidden": false,
+      "id": "sec_pi_items",
+      "is_default": true,
+      "label": "Items",
+      "type": "Section Break",
+      "idx": 12
+    },
+    {
+      "hidden": false,
+      "id": "items",
+      "is_default": true,
+      "label": "Items",
+      "link_doctype": "Purchase Invoice Item",
+      "mandatory": true,
+      "type": "Table",
+      "idx": 13
+    },
+    {
+      "hidden": false,
+      "id": "sec_pi_taxes",
+      "is_default": true,
+      "label": "Taxes",
+      "type": "Section Break",
+      "idx": 14
+    },
+    {
+      "hidden": false,
+      "id": "taxes",
+      "is_default": true,
+      "label": "Taxes",
+      "link_doctype": "Purchase Taxes and Charges",
+      "mandatory": false,
+      "type": "Table",
+      "idx": 15
+    }
+  ],
+  "name": "Purchase Invoice"
+}

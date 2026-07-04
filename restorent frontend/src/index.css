@@ -1,0 +1,121 @@
+/* src/index.css */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: white;
+  font-family: 'Dubai Regular', Arial, sans-serif;
+  pointer-events: auto;
+  /* Ensure clicks are not blocked globally */
+}
+
+button,
+a,
+input,
+select {
+  pointer-events: auto;
+  /* Ensure interactive elements are clickable */
+  cursor: pointer;
+}
+
+/* Prevent overlays from blocking clicks */
+div[style*="position: fixed"],
+div[style*="position: absolute"] {
+  pointer-events: none;
+  /* Disable clicks on overlays unless specified */
+}
+
+div[style*="position: fixed"] *,
+div[style*="position: absolute"] * {
+  pointer-events: auto;
+  /* Re-enable clicks on children if needed */
+}
+
+/* Font definitions */
+@font-face {
+  font-family: 'Dubai Regular';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Dubai Regular'), url('./dubai-cufonfonts-webfont/Dubai-Regular.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Dubai Light';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Dubai Light'), url('./dubai-cufonfonts-webfont/Dubai-Light.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Dubai Medium';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Dubai Medium'), url('./dubai-cufonfonts-webfont/Dubai-Medium.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Dubai Bold';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Dubai Bold'), url('./dubai-cufonfonts-webfont/Dubai-Bold.woff') format('woff');
+}
+
+/* --- Global Responsive Rules --- */
+
+/* Responsive Table Wrapper */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Universal Table Fix */
+table {
+  min-width: auto;
+  /* Removed fixed 600px to allow responsive tables to shrink on mobile */
+}
+
+/* Ensure images don't overflow */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Flex/Grid Stacking for Mobile */
+@media (max-width: 768px) {
+  .flex-responsive {
+    flex-direction: column !important;
+  }
+
+  .grid-responsive {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Modals and Overlays */
+  div[style*="width"],
+  div[style*="max-width"] {
+    max-width: 95% !important;
+  }
+}
+
+/* Scrollbar Styling for Premium Feel (Global) */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

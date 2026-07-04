@@ -1,0 +1,5 @@
+{
+    "mode": "server",
+    "server_ip": "127.0.0.1",
+    "jwt_secret": "d6a7305bad8374be56b88c7ca2180b425c7bba6ec5fc34564605ff99915e58bb"
+}

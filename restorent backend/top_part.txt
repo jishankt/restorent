@@ -1,0 +1,227 @@
+﻿// Full BearerLoginPage.jsx - UPDATED for strict branch-scoped data isolation + NORMAL SVG EYE ICON (no emoji, clean normal icon, subtle gray color only)
+import React, { useState, useContext, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { UserContext } from '../Context/UserContext';
+import axios from 'axios';
+import './BearerLoginPage.css';
+
+// Define Page Mappings
+const PAGE_MAPPINGS = [
+  { id: 'opening', path: '/opening-entry' },
+  { id: 'closing', path: '/closing-entry' },
+  { id: 'dashboard', path: '/dashboard' },
+  { id: 'home', path: '/home' },
+  { id: 'tables', path: '/table' },
+  { id: 'pos', path: '/salespage' },
+  { id: 'cash', path: '/cash' },
+  { id: 'card', path: '/card' },
+  { id: 'active_orders', path: '/active-orders' },
+  { id: 'kitchen', path: '/kitchen' },
+  { id: 'saved_orders', path: '/savedorders' },
+  { id: 'customer_list', path: '/customers' },
+  { id: 'create_customer', path: '/create-customer' },
+  { id: 'employee_list', path: '/employee-list' },
+  { id: 'add_employee', path: '/add-employee' },
+  { id: 'sales_report', path: '/sales-reports' },
+  { id: 'trip_report', path: '/trip-report' },
+  { id: 'pos_balance', path: '/pos-balance' },
+  { id: 'system_settings', path: '/system-settings' },
+  { id: 'company_details', path: '/company-details' },
+  { id: 'item_list', path: '/items' },
+  { id: 'create_item', path: '/create-item' },
+  { id: 'schedule_master', path: '/schedule-master' },
+  { id: 'roaster', path: '/roaster' },
+  { id: 'leave_apply', path: '/leave-apply' },
+  { id: 'vehicle_management', path: '/vehicle-management' },
+  { id: 'frontpage', path: '/frontpage' },
+  { id: 'bearer', path: '/bearer' },
+  { id: 'admin', path: '/admin' }
+];
+
+function BearerLoginPage() {
+  const navigate = useNavigate();
+  const { setUser } = useContext(UserContext);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isAdminLogin, setIsAdminLogin] = useState(false);
+  const [warningMessage, setWarningMessage] = useState('');
+  const [warningType, setWarningType] = useState('error');
+  const [isLoading, setIsLoading] = useState(false);
+  const [dbStatus, setDbStatus] = useState('Unknown');
+
+  // Password hide/show toggle state
+  const [showPassword, setShowPassword] = useState(false);
+
+  // Selection States
+  const [showSelection, setShowSelection] = useState(false);
+  const [availableCompanies, setAvailableCompanies] = useState([]);
+  const [availableBranches, setAvailableBranches] = useState([]);
+  const [selectedCompany, setSelectedCompany] = useState('');
+  const [selectedBranch, setSelectedBranch] = useState('');
+  const [tempUser, setTempUser] = useState(null);
+  const [tempLoginResponse, setTempLoginResponse] = useState(null);
+
+  useEffect(() => {
+    const checkStatus = async () => {
+      try {
+        const response = await axios.get('/api/network_info');
+        if (response.data && response.data.database_status) {
+          setDbStatus(response.data.database_status);
+        }
+      } catch (err) {
+        setDbStatus('Unreachable');
+      }
+    };
+    checkStatus();
+  }, []);
+
+  const handleLoginSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setWarningMessage('');
+    try {
+      const response = await axios.post('/api/login', {
+        email,
+        password,
+      });
+      let { user, token, tenants, companies, branches } = response.data;
+
+      // If the backend sent them at the top level, merge them into the user object
+      if (tenants) user.tenants = tenants;
+      if (companies) user.companies = companies;
+      if (branches) user.branches = branches;
+
+      localStorage.setItem('token', token);
+      const primaryCompany = user.company || user.company_name || '';
+
+      // Normalize companies
+      const rawCompanies = user.companies || [];
+      const cleanCompanies = rawCompanies.map(c => {
+        if (typeof c === 'object' && c !== null) {
+          const compName = c.company_name || c.company || c.name || '';
+          return typeof compName === 'string' ? compName : String(compName);
+        }
+        return typeof c === 'string' ? c : String(c);
+      }).filter(c => c && c !== 'null' && c !== 'undefined' && c !== '[object Object]');
+      const fallbackCompanies = Array.from(new Set([...cleanCompanies, primaryCompany].filter(Boolean)));
+
+      // Normalize branches
+      const rawBranches = user.branches || [];
+      const cleanBranches = rawBranches.map(b => {
+        if (typeof b === 'object' && b !== null) {
+          const bName = b.branch_name || b.branch || b.name || '';
+          const cName = b.company_name || b.company || primaryCompany;
+          return {
+            company: typeof cName === 'string' ? cName : String(cName),
+            branch: typeof bName === 'string' ? bName : String(bName)
+          };
+        }
+        return { company: primaryCompany, branch: typeof b === 'string' ? b : String(b) };
+      }).filter(b => b.branch && b.branch !== 'null' && b.branch !== 'undefined' && b.branch !== '' && b.branch !== '[object Object]');
+
+      // --- NEW STRICT REDIRECTION LOGIC (UPDATED) ---
+      const isGroupAdmin = user.role === 'group_admin' || user.role === 'groupadmin' || user.role === 'Super Admin' || user.role === 'Tenant Admin';
+      const isCompanyAdmin = user.role === 'Company Admin';
+
+      let forceSelection = false;
+      const isSuperUser = user.role === 'admin' || user.role === 'Super Admin' || user.role === 'group_admin' || user.role === 'groupadmin' || user.role === 'Tenant Admin';
+
+      if (isSuperUser) {
+        forceSelection = false;
+      } else if (fallbackCompanies.length > 1) {
+        forceSelection = true;
+      } else if (!isGroupAdmin && !isCompanyAdmin && !primaryCompany && cleanBranches.length > 1 && !user.branch) {
+        // Normal staff with multiple branches still need to pick a branch for their shift
+        forceSelection = true;
+      }
+
+      if (forceSelection) {
+        setTempUser(user);
+        setTempLoginResponse(response.data);
+        setAvailableCompanies(fallbackCompanies);
+        setAvailableBranches(cleanBranches);
+
+        let defaultCompany = fallbackCompanies.includes(primaryCompany) ? primaryCompany : (fallbackCompanies[0] || '');
+        if (isGroupAdmin && fallbackCompanies.length > 1) {
+          defaultCompany = 'All';
+        }
+        setSelectedCompany(defaultCompany);
+
+        const firstBranch = defaultCompany === 'All' ? null : cleanBranches.find(b => b.company === defaultCompany);
+        setSelectedBranch('All Branches');
+        setShowSelection(true);
+      } else {
+        let finalCompany = primaryCompany || fallbackCompanies[0] || 'POS 8';
+        if (isGroupAdmin && fallbackCompanies.length > 1) {
+          finalCompany = 'All';
+        }
+
+        let finalBranch = user.branch || user.branch_name ||
+          (cleanBranches.length === 1 ?
+            (typeof cleanBranches[0] === 'object' ? cleanBranches[0].branch : cleanBranches[0])
+            : '');
+
+        if (isGroupAdmin || isCompanyAdmin) {
+          finalBranch = 'All Branches';
+        }
+
+        finalizeLogin(user, response.data, finalCompany, finalBranch);
+      }
+    } catch (err) {
+      setWarningMessage(err.response?.data?.error || 'Login failed.');
+      setWarningType('error');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSelectionSubmit = () => {
+    if (!selectedCompany) {
+      setWarningMessage('Please select a company');
+      setWarningType('warning');
+      return;
+    }
+    const branchesForCompany = availableBranches.filter(b => b.company === selectedCompany);
+    if (branchesForCompany.length > 0 && !selectedBranch) {
+      setWarningMessage('Please select a branch to continue');
+      setWarningType('warning');
+      return;
+    }
+    finalizeLogin(tempUser, tempLoginResponse, selectedCompany, selectedBranch);
+  };
+
+  const finalizeLogin = (user, loginData, company, branch) => {
+    localStorage.setItem('active_tenant_id', user.tenant_id || '');
+    localStorage.setItem('active_company_id', user.company_id || '');
+    localStorage.setItem('active_branch_id', user.branch_id || '');
+    localStorage.setItem('active_tenant_name', user.tenant_name || '');
+    localStorage.setItem('active_company', company);
+    localStorage.setItem('active_branch', branch);
+    localStorage.setItem('pos_profile', user.pos_profile || 'POS-001');
+
+    const finalCompanies = (user.companies || []).map(c => typeof c === 'object' && c !== null ? (c.company_name || c.company || c.name || '') : c).filter(c => c && typeof c === 'string');
+    const finalBranches = (user.branches || []).map(b => typeof b === 'object' && b !== null ? (b.branch_name || b.branch || b.name || '') : b).filter(b => b && typeof b === 'string');
+
+    const updatedUser = { ...user, company, branch, companies: finalCompanies, branches: finalBranches };
+    setUser(updatedUser);
+    localStorage.setItem('user', JSON.stringify(updatedUser));
+    setWarningMessage('Login Successful!');
+    setWarningType('success');
+    localStorage.removeItem('user_permissions');
+
+    setTimeout(() => {
+      if (isAdminLogin) {
+        navigate('/admin');
+      } else {
+        navigate('/home');
+      }
+    }, 1000);
+  };
+
+  const branchesForSelectedCompany = selectedCompany === 'All' ? [] : availableBranches.filter(b => {
+    const bComp = b.company || '';
+    return bComp === selectedCompany;
+  });
+  const branchRequired = selectedCompany !== 'All' && branchesForSelectedCompany.length > 0;
+  const canProceed = selectedCompany === 'All' || !branchRequired || (!!selectedBranch && selectedBranch !== '');
+

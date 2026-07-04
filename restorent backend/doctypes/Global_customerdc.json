@@ -1,0 +1,46 @@
+{
+  "name": "CustomerDC",
+  "fields": [
+    {
+      "id": "customer_name",
+      "label": "Customer Name",
+      "type": "Data",
+      "mandatory": true,
+      "is_default": true
+    },
+    {
+      "id": "dc_date",
+      "label": "DC Date",
+      "type": "Date",
+      "mandatory": true,
+      "is_default": true
+    },
+    {
+      "id": "phone_number",
+      "label": "Phone Number",
+      "type": "Data",
+      "mandatory": false,
+      "is_default": true
+    },
+    {
+      "id": "total_amount",
+      "label": "Total Amount",
+      "type": "Float",
+      "mandatory": false,
+      "is_default": true
+    },
+    {
+      "id": "description",
+      "label": "Description",
+      "type": "Small Text",
+      "mandatory": false,
+      "is_default": false
+    }
+  ],
+  "settings": {
+    "enable_otp_on_edit": false
+  },
+  "company_names": [
+    "Global"
+  ]
+}

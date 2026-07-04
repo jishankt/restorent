@@ -1,0 +1,1787 @@
+[
+  {
+    "plan_name": "MASTER_PALETTE",
+    "items": [
+      {
+        "id": "mod_workflows",
+        "isExpanded": false,
+        "name": "Workflows & Experience",
+        "pages": [
+          {
+            "id": "page_wf_takeaway",
+            "name": "Takeaway",
+            "price": 5
+          },
+          {
+            "id": "page_wf_dinein",
+            "name": "Dine In",
+            "price": 10
+          },
+          {
+            "id": "page_wf_online",
+            "name": "Online Delivery",
+            "price": 20
+          }
+        ],
+        "price": 35
+      },
+      {
+        "id": "mod_pos_dashboard",
+        "isExpanded": false,
+        "name": "POS Dashboard",
+        "pages": [
+          {
+            "id": "page_posd_home",
+            "name": "Home Dashboard",
+            "price": 10
+          },
+          {
+            "id": "page_posd_front",
+            "name": "Front Page",
+            "price": 10
+          },
+          {
+            "id": "page_posd_bal",
+            "name": "POS Balance",
+            "price": 5
+          }
+        ],
+        "price": 25
+      },
+      {
+        "id": "mod_pos_billing",
+        "isExpanded": false,
+        "name": "POS Billing",
+        "pages": [
+          {
+            "id": "page_posb_open",
+            "name": "Opening Entry",
+            "price": 5
+          },
+          {
+            "id": "page_posb_close",
+            "name": "Closing Entry",
+            "price": 5
+          },
+          {
+            "id": "page_posb_cash",
+            "name": "Cash Payment",
+            "price": 5
+          },
+          {
+            "id": "page_posb_card",
+            "name": "Card Payment",
+            "price": 5
+          },
+          {
+            "id": "page_posb_upi",
+            "name": "UPI Payment",
+            "price": 5
+          }
+        ],
+        "price": 25
+      },
+      {
+        "id": "mod_table_mgmt",
+        "isExpanded": false,
+        "name": "Table Management",
+        "pages": [
+          {
+            "id": "page_tm_table",
+            "name": "Table Page",
+            "price": 10
+          },
+          {
+            "id": "page_tm_add",
+            "name": "Add Table",
+            "price": 5
+          },
+          {
+            "id": "page_tm_book",
+            "name": "Table Booking",
+            "price": 10
+          }
+        ],
+        "price": 25
+      },
+      {
+        "id": "mod_kitchen_mgmt",
+        "isExpanded": false,
+        "name": "Kitchen Management",
+        "pages": [
+          {
+            "id": "page_km_kitchen",
+            "name": "Kitchen Page",
+            "price": 15
+          },
+          {
+            "id": "page_km_add",
+            "name": "Add Kitchen",
+            "price": 10
+          },
+          {
+            "id": "page_km_active",
+            "name": "Active Orders",
+            "price": 10
+          }
+        ],
+        "price": 35
+      },
+      {
+        "id": "mod_customer_mgmt",
+        "isExpanded": false,
+        "name": "Customer Management",
+        "pages": [
+          {
+            "id": "page_cm_list",
+            "name": "Customer List",
+            "price": 5
+          },
+          {
+            "id": "page_cm_create",
+            "name": "Create Customer",
+            "price": 5
+          },
+          {
+            "id": "page_cm_group",
+            "name": "Customer Group",
+            "price": 5
+          }
+        ],
+        "price": 15
+      },
+      {
+        "id": "mod_inventory_mgmt",
+        "isExpanded": false,
+        "name": "Inventory Management",
+        "pages": [
+          {
+            "id": "page_im_list",
+            "name": "Items List",
+            "price": 10
+          },
+          {
+            "id": "page_im_create",
+            "name": "Create Item",
+            "price": 10
+          },
+          {
+            "id": "page_im_hidden",
+            "name": "Hidden Items",
+            "price": 5
+          },
+          {
+            "id": "page_im_grplist",
+            "name": "Item Group List",
+            "price": 5
+          },
+          {
+            "id": "page_im_addgrp",
+            "name": "Add Item Group",
+            "price": 5
+          },
+          {
+            "id": "page_im_variant",
+            "name": "Create Variant",
+            "price": 10
+          },
+          {
+            "id": "page_im_ingred",
+            "name": "Add Ingredients & Nutrition",
+            "price": 15
+          },
+          {
+            "id": "page_im_combo",
+            "name": "Combo Offer",
+            "price": 10
+          }
+        ],
+        "price": 70
+      },
+      {
+        "id": "mod_purchase_mgmt",
+        "isExpanded": false,
+        "name": "Purchase Management",
+        "pages": [
+          {
+            "id": "page_pm_sup",
+            "name": "Suppliers",
+            "price": 10
+          },
+          {
+            "id": "page_pm_grplist",
+            "name": "Supplier Group List",
+            "price": 5
+          },
+          {
+            "id": "page_pm_items",
+            "name": "Items List",
+            "price": 5
+          },
+          {
+            "id": "page_pm_order",
+            "name": "Purchase Order",
+            "price": 15
+          },
+          {
+            "id": "page_pm_rect",
+            "name": "Purchase Receipt",
+            "price": 10
+          },
+          {
+            "id": "page_pm_inv",
+            "name": "Purchase Invoice",
+            "price": 10
+          },
+          {
+            "id": "page_pm_rep",
+            "name": "Purchase Reports",
+            "price": 10
+          }
+        ],
+        "price": 65
+      },
+      {
+        "id": "mod_hr_payroll",
+        "isExpanded": false,
+        "name": "HR & Payroll",
+        "pages": [
+          {
+            "id": "page_hr_addemp",
+            "name": "Add Employee",
+            "price": 10
+          },
+          {
+            "id": "page_hr_emplist",
+            "name": "Employee List",
+            "price": 5
+          },
+          {
+            "id": "page_hr_delpersons",
+            "name": "Delivery Persons",
+            "price": 10
+          },
+          {
+            "id": "page_hr_empdet",
+            "name": "Employee Details",
+            "price": 10
+          },
+          {
+            "id": "page_hr_empdesig",
+            "name": "Employee Designations",
+            "price": 5
+          },
+          {
+            "id": "page_hr_emptypes",
+            "name": "Employee Types",
+            "price": 5
+          },
+          {
+            "id": "page_hr_empdepts",
+            "name": "Employee Departments",
+            "price": 5
+          },
+          {
+            "id": "page_hr_att",
+            "name": "Attendance",
+            "price": 10
+          },
+          {
+            "id": "page_hr_attview",
+            "name": "Attendance View",
+            "price": 5
+          },
+          {
+            "id": "page_hr_salslip",
+            "name": "Salary Slip",
+            "price": 10
+          },
+          {
+            "id": "page_hr_salrect",
+            "name": "Salary Receipt List",
+            "price": 15
+          },
+          {
+            "id": "page_hr_lvtype",
+            "name": "Leave Type",
+            "price": 5
+          },
+          {
+            "id": "page_hr_lvalloc",
+            "name": "Leave Allocation",
+            "price": 10
+          },
+          {
+            "id": "page_hr_lvapply",
+            "name": "Leave Apply",
+            "price": 5
+          },
+          {
+            "id": "page_hr_schmas",
+            "name": "Schedule Master",
+            "price": 10
+          },
+          {
+            "id": "page_hr_schass",
+            "name": "Schedule Assign Employee",
+            "price": 10
+          },
+          {
+            "id": "page_hr_roaster",
+            "name": "Roaster",
+            "price": 10
+          },
+          {
+            "id": "page_hr_users",
+            "name": "Users",
+            "price": 10
+          },
+          {
+            "id": "page_hr_hollist",
+            "name": "Holiday List",
+            "price": 5
+          },
+          {
+            "id": "page_hr_extdoc",
+            "name": "Extended DocType",
+            "price": 20
+          }
+        ],
+        "price": 175
+      },
+      {
+        "id": "mod_vehicle_mgmt",
+        "isExpanded": false,
+        "name": "Vehicle Management",
+        "pages": [
+          {
+            "id": "page_veh_mgmt",
+            "name": "Vehicle Management",
+            "price": 15
+          }
+        ],
+        "price": 15
+      },
+      {
+        "id": "mod_address_mgmt",
+        "isExpanded": false,
+        "name": "Address Management",
+        "pages": [
+          {
+            "id": "page_add_struc",
+            "name": "Address Structure",
+            "price": 10
+          }
+        ],
+        "price": 10
+      },
+      {
+        "id": "mod_reports",
+        "isExpanded": false,
+        "name": "Reports",
+        "pages": [
+          {
+            "id": "page_rep_inv",
+            "name": "Sales Invoice",
+            "price": 10
+          },
+          {
+            "id": "page_rep_sal",
+            "name": "Sales Report",
+            "price": 10
+          },
+          {
+            "id": "page_rep_kanban",
+            "name": "Sales Kanban",
+            "price": 15
+          },
+          {
+            "id": "page_rep_trip",
+            "name": "Trip Report",
+            "price": 15
+          }
+        ],
+        "price": 50
+      },
+      {
+        "id": "mod_settings",
+        "isExpanded": false,
+        "name": "Settings",
+        "pages": [
+          {
+            "id": "page_set_sys",
+            "name": "System Settings",
+            "price": 10
+          },
+          {
+            "id": "page_set_email",
+            "name": "Email Settings",
+            "price": 10
+          },
+          {
+            "id": "page_set_print",
+            "name": "Print Settings",
+            "price": 5
+          },
+          {
+            "id": "page_set_bkp",
+            "name": "Backups",
+            "price": 15
+          },
+          {
+            "id": "page_set_imp",
+            "name": "Advanced Import",
+            "price": 20
+          },
+          {
+            "id": "page_set_work",
+            "name": "Working Days",
+            "price": 5
+          },
+          {
+            "id": "page_set_doc",
+            "name": "DocType Management",
+            "price": 20
+          },
+          {
+            "id": "page_set_tax",
+            "name": "Tax Master",
+            "price": 10
+          }
+        ],
+        "price": 95
+      },
+      {
+        "id": "mod_multi_branch",
+        "isExpanded": false,
+        "name": "Multi Branch Support",
+        "pages": [
+          {
+            "id": "page_mb_tenants",
+            "name": "Manage Tenants",
+            "price": 20
+          },
+          {
+            "id": "page_mb_comp",
+            "name": "Manage Companies",
+            "price": 15
+          },
+          {
+            "id": "page_mb_branch",
+            "name": "Manage Branches",
+            "price": 15
+          },
+          {
+            "id": "page_mb_compdet",
+            "name": "Company Details",
+            "price": 10
+          }
+        ],
+        "price": 60
+      },
+      {
+        "id": "mod_auth",
+        "isExpanded": false,
+        "name": "Authentication",
+        "pages": [
+          {
+            "id": "page_auth_log",
+            "name": "Login",
+            "price": 5
+          },
+          {
+            "id": "page_auth_reg",
+            "name": "Register",
+            "price": 5
+          }
+        ],
+        "price": 10
+      },
+      {
+        "id": "mod_role_mgmt",
+        "isExpanded": false,
+        "name": "Role Management",
+        "pages": [
+          {
+            "id": "page_role_perm",
+            "name": "Role Permissions",
+            "price": 0
+          }
+        ],
+        "price": 0
+      },
+      {
+        "id": "mod_notifications",
+        "isExpanded": false,
+        "name": "Notifications & Voice",
+        "pages": [
+          {
+            "id": "page_notif_main",
+            "name": "Notifications",
+            "price": 10
+          },
+          {
+            "id": "page_notif_voice",
+            "name": "Voice Support",
+            "price": 20
+          }
+        ],
+        "price": 30
+      },
+      {
+        "id": "mod_order_tracking",
+        "isExpanded": false,
+        "name": "Order Tracking",
+        "pages": [
+          {
+            "id": "page_trk_act",
+            "name": "Active Orders",
+            "price": 15
+          }
+        ],
+        "price": 15
+      },
+      {
+        "id": "mod_admin_dashboard",
+        "isExpanded": false,
+        "name": "Admin Dashboard",
+        "pages": [
+          {
+            "id": "page_ad_dash",
+            "name": "Dashboard",
+            "price": 10
+          },
+          {
+            "id": "page_ad_pan",
+            "name": "Admin Panel",
+            "price": 15
+          },
+          {
+            "id": "page_ad_main",
+            "name": "Main Page",
+            "price": 10
+          }
+        ],
+        "price": 35
+      }
+    ],
+    "tenant_id": "DEFAULT_TENANT",
+    "company_name": "All",
+    "branch_name": "All Branches",
+    "updated_at": "2026-06-22T06:40:24.159921+00:00",
+    "branch_id": null,
+    "company": "All",
+    "branch": "All Branches"
+  },
+  {
+    "plan_name": "Basic Plan",
+    "items": [
+      {
+        "id": "mod_workflows",
+        "isParent": true,
+        "name": "Workflows & Experience",
+        "pages": [
+          {
+            "id": "page_wf_takeaway",
+            "name": "Takeaway",
+            "price": 5
+          }
+        ],
+        "price": 5
+      },
+      {
+        "id": "mod_pos_dashboard",
+        "isParent": true,
+        "name": "POS Dashboard",
+        "pages": [
+          {
+            "id": "page_posd_home",
+            "name": "Home Dashboard",
+            "price": 10
+          },
+          {
+            "id": "page_posd_front",
+            "name": "Front Page",
+            "price": 10
+          },
+          {
+            "id": "page_posd_bal",
+            "name": "POS Balance",
+            "price": 5
+          }
+        ],
+        "price": 25
+      },
+      {
+        "id": "mod_pos_billing",
+        "isParent": true,
+        "name": "POS Billing",
+        "pages": [
+          {
+            "id": "page_posb_open",
+            "name": "Opening Entry",
+            "price": 5
+          },
+          {
+            "id": "page_posb_close",
+            "name": "Closing Entry",
+            "price": 5
+          },
+          {
+            "id": "page_posb_cash",
+            "name": "Cash Payment",
+            "price": 5
+          },
+          {
+            "id": "page_posb_card",
+            "name": "Card Payment",
+            "price": 5
+          },
+          {
+            "id": "page_posb_upi",
+            "name": "UPI Payment",
+            "price": 5
+          }
+        ],
+        "price": 25
+      },
+      {
+        "id": "mod_inventory_mgmt",
+        "isParent": true,
+        "name": "Inventory Management",
+        "pages": [
+          {
+            "id": "page_im_list",
+            "name": "Items List",
+            "price": 10
+          },
+          {
+            "id": "page_im_create",
+            "name": "Create Item",
+            "price": 10
+          },
+          {
+            "id": "page_im_grplist",
+            "name": "Item Group List",
+            "price": 5
+          },
+          {
+            "id": "page_im_addgrp",
+            "name": "Add Item Group",
+            "price": 5
+          }
+        ],
+        "price": 30
+      },
+      {
+        "id": "mod_reports",
+        "isParent": true,
+        "name": "Reports",
+        "pages": [
+          {
+            "id": "page_rep_inv",
+            "name": "Sales Invoice",
+            "price": 10
+          },
+          {
+            "id": "page_rep_sal",
+            "name": "Sales Report",
+            "price": 10
+          }
+        ],
+        "price": 20
+      },
+      {
+        "id": "mod_settings",
+        "isParent": true,
+        "name": "Settings",
+        "pages": [
+          {
+            "id": "page_set_sys",
+            "name": "System Settings",
+            "price": 10
+          },
+          {
+            "id": "page_set_print",
+            "name": "Print Settings",
+            "price": 5
+          },
+          {
+            "id": "page_set_tax",
+            "name": "Tax Master",
+            "price": 10
+          }
+        ],
+        "price": 25
+      },
+      {
+        "id": "mod_auth",
+        "isParent": true,
+        "name": "Authentication",
+        "pages": [
+          {
+            "id": "page_auth_log",
+            "name": "Login",
+            "price": 5
+          },
+          {
+            "id": "page_auth_reg",
+            "name": "Register",
+            "price": 5
+          }
+        ],
+        "price": 10
+      },
+      {
+        "id": "mod_admin_dashboard",
+        "isParent": true,
+        "name": "Admin Dashboard",
+        "pages": [
+          {
+            "id": "page_ad_dash",
+            "name": "Dashboard",
+            "price": 10
+          },
+          {
+            "id": "page_ad_pan",
+            "name": "Admin Panel",
+            "price": 15
+          },
+          {
+            "id": "page_ad_main",
+            "name": "Main Page",
+            "price": 10
+          }
+        ],
+        "price": 35
+      },
+      {
+        "id": "mod_customer_mgmt",
+        "isParent": true,
+        "name": "Customer Management",
+        "pages": [
+          {
+            "id": "page_cm_list",
+            "name": "Customer List",
+            "price": 5
+          },
+          {
+            "id": "page_cm_create",
+            "name": "Create Customer",
+            "price": 5
+          },
+          {
+            "id": "page_cm_group",
+            "name": "Customer Group",
+            "price": 5
+          }
+        ],
+        "price": 15
+      },
+      {
+        "id": "mod_multi_branch",
+        "isParent": true,
+        "name": "Multi Branch Support",
+        "pages": [
+          {
+            "id": "page_mb_tenants",
+            "name": "Manage Tenants",
+            "price": 20
+          },
+          {
+            "id": "page_mb_comp",
+            "name": "Manage Companies",
+            "price": 15
+          },
+          {
+            "id": "page_mb_branch",
+            "name": "Manage Branches",
+            "price": 15
+          }
+        ],
+        "price": 50
+      },
+      {
+        "id": "mod_purchase_mgmt",
+        "isParent": true,
+        "name": "Purchase Management",
+        "pages": [
+          {
+            "id": "page_pm_sup",
+            "name": "Suppliers",
+            "price": 10
+          },
+          {
+            "id": "page_pm_grplist",
+            "name": "Supplier Group List",
+            "price": 5
+          },
+          {
+            "id": "page_pm_items",
+            "name": "Items List",
+            "price": 5
+          },
+          {
+            "id": "page_pm_order",
+            "name": "Purchase Order",
+            "price": 15
+          },
+          {
+            "id": "page_pm_rep",
+            "name": "Purchase Reports",
+            "price": 10
+          }
+        ],
+        "price": 45
+      }
+    ],
+    "tenant_id": "DEFAULT_TENANT",
+    "company_name": "All",
+    "branch_name": "All Branches",
+    "updated_at": "2026-06-22T06:42:36.424939+00:00",
+    "branch_id": null,
+    "company": "All",
+    "branch": "All Branches"
+  },
+  {
+    "plan_name": "Silver Plan",
+    "items": [
+      {
+        "id": "mod_workflows",
+        "isParent": true,
+        "name": "Workflows & Experience",
+        "pages": [
+          {
+            "id": "page_wf_takeaway",
+            "name": "Takeaway",
+            "price": 5
+          },
+          {
+            "id": "page_wf_dinein",
+            "name": "Dine In",
+            "price": 10
+          }
+        ],
+        "price": 15
+      },
+      {
+        "id": "mod_pos_dashboard",
+        "isParent": true,
+        "name": "POS Dashboard",
+        "pages": [
+          {
+            "id": "page_posd_home",
+            "name": "Home Dashboard",
+            "price": 10
+          },
+          {
+            "id": "page_posd_front",
+            "name": "Front Page",
+            "price": 10
+          }
+        ],
+        "price": 20
+      },
+      {
+        "id": "mod_pos_billing",
+        "isParent": true,
+        "name": "POS Billing",
+        "pages": [
+          {
+            "id": "page_posb_open",
+            "name": "Opening Entry",
+            "price": 5
+          },
+          {
+            "id": "page_posb_close",
+            "name": "Closing Entry",
+            "price": 5
+          },
+          {
+            "id": "page_posb_cash",
+            "name": "Cash Payment",
+            "price": 5
+          },
+          {
+            "id": "page_posb_card",
+            "name": "Card Payment",
+            "price": 5
+          },
+          {
+            "id": "page_posb_upi",
+            "name": "UPI Payment",
+            "price": 5
+          }
+        ],
+        "price": 25
+      },
+      {
+        "id": "mod_table_mgmt",
+        "isParent": true,
+        "name": "Table Management",
+        "pages": [
+          {
+            "id": "page_tm_table",
+            "name": "Table Page",
+            "price": 10
+          },
+          {
+            "id": "page_tm_add",
+            "name": "Add Table",
+            "price": 5
+          },
+          {
+            "id": "page_tm_book",
+            "name": "Table Booking",
+            "price": 10
+          }
+        ],
+        "price": 25
+      },
+      {
+        "id": "mod_kitchen_mgmt",
+        "isParent": true,
+        "name": "Kitchen Management",
+        "pages": [
+          {
+            "id": "page_km_kitchen",
+            "name": "Kitchen Page",
+            "price": 15
+          },
+          {
+            "id": "page_km_add",
+            "name": "Add Kitchen",
+            "price": 10
+          },
+          {
+            "id": "page_km_active",
+            "name": "Active Orders",
+            "price": 10
+          }
+        ],
+        "price": 35
+      },
+      {
+        "id": "mod_order_tracking",
+        "isParent": true,
+        "name": "Order Tracking",
+        "pages": [
+          {
+            "id": "page_trk_act",
+            "name": "Active Orders",
+            "price": 0
+          }
+        ],
+        "price": 0
+      },
+      {
+        "id": "mod_customer_mgmt",
+        "isParent": true,
+        "name": "Customer Management",
+        "pages": [
+          {
+            "id": "page_cm_list",
+            "name": "Customer List",
+            "price": 5
+          },
+          {
+            "id": "page_cm_create",
+            "name": "Create Customer",
+            "price": 5
+          },
+          {
+            "id": "page_cm_group",
+            "name": "Customer Group",
+            "price": 5
+          }
+        ],
+        "price": 15
+      },
+      {
+        "id": "mod_purchase_mgmt",
+        "isParent": true,
+        "name": "Purchase Management",
+        "pages": [
+          {
+            "id": "page_pm_sup",
+            "name": "Suppliers",
+            "price": 10
+          },
+          {
+            "id": "page_pm_grplist",
+            "name": "Supplier Group List",
+            "price": 5
+          },
+          {
+            "id": "page_pm_items",
+            "name": "Items List",
+            "price": 5
+          },
+          {
+            "id": "page_pm_order",
+            "name": "Purchase Order",
+            "price": 15
+          },
+          {
+            "id": "page_pm_rep",
+            "name": "Purchase Reports",
+            "price": 10
+          }
+        ],
+        "price": 45
+      },
+      {
+        "id": "mod_reports",
+        "isParent": true,
+        "name": "Reports",
+        "pages": [
+          {
+            "id": "page_rep_inv",
+            "name": "Sales Invoice",
+            "price": 10
+          },
+          {
+            "id": "page_rep_sal",
+            "name": "Sales Report",
+            "price": 10
+          }
+        ],
+        "price": 20
+      },
+      {
+        "id": "mod_settings",
+        "isParent": true,
+        "name": "Settings",
+        "pages": [
+          {
+            "id": "page_set_sys",
+            "name": "System Settings",
+            "price": 10
+          },
+          {
+            "id": "page_set_email",
+            "name": "Email Settings",
+            "price": 10
+          },
+          {
+            "id": "page_set_print",
+            "name": "Print Settings",
+            "price": 5
+          },
+          {
+            "id": "page_set_tax",
+            "name": "Tax Master",
+            "price": 10
+          }
+        ],
+        "price": 35
+      },
+      {
+        "id": "mod_multi_branch",
+        "isParent": true,
+        "name": "Multi Branch Support",
+        "pages": [
+          {
+            "id": "page_mb_tenants",
+            "name": "Manage Tenants",
+            "price": 20
+          },
+          {
+            "id": "page_mb_comp",
+            "name": "Manage Companies",
+            "price": 15
+          },
+          {
+            "id": "page_mb_branch",
+            "name": "Manage Branches",
+            "price": 15
+          },
+          {
+            "id": "page_mb_compdet",
+            "name": "Company Details",
+            "price": 10
+          }
+        ],
+        "price": 60
+      },
+      {
+        "id": "mod_auth",
+        "isParent": true,
+        "name": "Authentication",
+        "pages": [
+          {
+            "id": "page_auth_log",
+            "name": "Login",
+            "price": 5
+          },
+          {
+            "id": "page_auth_reg",
+            "name": "Register",
+            "price": 5
+          }
+        ],
+        "price": 10
+      },
+      {
+        "id": "mod_admin_dashboard",
+        "isParent": true,
+        "name": "Admin Dashboard",
+        "pages": [
+          {
+            "id": "page_ad_dash",
+            "name": "Dashboard",
+            "price": 10
+          },
+          {
+            "id": "page_ad_pan",
+            "name": "Admin Panel",
+            "price": 15
+          },
+          {
+            "id": "page_ad_main",
+            "name": "Main Page",
+            "price": 10
+          }
+        ],
+        "price": 35
+      },
+      {
+        "id": "mod_notifications",
+        "isParent": true,
+        "name": "Notifications & Voice",
+        "pages": [
+          {
+            "id": "page_notif_main",
+            "name": "Notifications",
+            "price": 10
+          }
+        ],
+        "price": 10
+      },
+      {
+        "id": "mod_inventory_mgmt",
+        "isParent": true,
+        "name": "Inventory Management",
+        "pages": [
+          {
+            "id": "page_im_list",
+            "name": "Items List",
+            "price": 10
+          },
+          {
+            "id": "page_im_create",
+            "name": "Create Item",
+            "price": 10
+          },
+          {
+            "id": "page_im_hidden",
+            "name": "Hidden Items",
+            "price": 5
+          },
+          {
+            "id": "page_im_grplist",
+            "name": "Item Group List",
+            "price": 5
+          },
+          {
+            "id": "page_im_addgrp",
+            "name": "Add Item Group",
+            "price": 5
+          },
+          {
+            "id": "page_im_variant",
+            "name": "Create Variant",
+            "price": 10
+          },
+          {
+            "id": "page_im_ingred",
+            "name": "Add Ingredients & Nutrition",
+            "price": 15
+          },
+          {
+            "id": "page_im_combo",
+            "name": "Combo Offer",
+            "price": 10
+          }
+        ],
+        "price": 70
+      }
+    ],
+    "tenant_id": "DEFAULT_TENANT",
+    "company_name": "All",
+    "branch_name": "All Branches",
+    "updated_at": "2026-06-22T06:42:38.621779+00:00",
+    "branch_id": null,
+    "company": "All",
+    "branch": "All Branches"
+  },
+  {
+    "plan_name": "Gold Plan",
+    "items": [
+      {
+        "id": "mod_workflows",
+        "isParent": true,
+        "name": "Workflows & Experience",
+        "pages": [
+          {
+            "id": "page_wf_takeaway",
+            "name": "Takeaway",
+            "price": 5
+          },
+          {
+            "id": "page_wf_online",
+            "name": "Online Delivery",
+            "price": 20
+          }
+        ],
+        "price": 25
+      },
+      {
+        "id": "mod_pos_dashboard",
+        "isParent": true,
+        "name": "POS Dashboard",
+        "pages": [
+          {
+            "id": "page_posd_home",
+            "name": "Home Dashboard",
+            "price": 10
+          },
+          {
+            "id": "page_posd_front",
+            "name": "Front Page",
+            "price": 10
+          },
+          {
+            "id": "page_posd_bal",
+            "name": "POS Balance",
+            "price": 5
+          }
+        ],
+        "price": 25
+      },
+      {
+        "id": "mod_pos_billing",
+        "isParent": true,
+        "name": "POS Billing",
+        "pages": [
+          {
+            "id": "page_posb_open",
+            "name": "Opening Entry",
+            "price": 5
+          },
+          {
+            "id": "page_posb_close",
+            "name": "Closing Entry",
+            "price": 5
+          },
+          {
+            "id": "page_posb_cash",
+            "name": "Cash Payment",
+            "price": 5
+          },
+          {
+            "id": "page_posb_card",
+            "name": "Card Payment",
+            "price": 5
+          },
+          {
+            "id": "page_posb_upi",
+            "name": "UPI Payment",
+            "price": 5
+          }
+        ],
+        "price": 25
+      },
+      {
+        "id": "mod_table_mgmt",
+        "isParent": true,
+        "name": "Table Management",
+        "pages": [
+          {
+            "id": "page_tm_table",
+            "name": "Table Page",
+            "price": 10
+          },
+          {
+            "id": "page_tm_add",
+            "name": "Add Table",
+            "price": 5
+          },
+          {
+            "id": "page_tm_book",
+            "name": "Table Booking",
+            "price": 10
+          }
+        ],
+        "price": 25
+      },
+      {
+        "id": "mod_kitchen_mgmt",
+        "isParent": true,
+        "name": "Kitchen Management",
+        "pages": [
+          {
+            "id": "page_km_kitchen",
+            "name": "Kitchen Page",
+            "price": 15
+          },
+          {
+            "id": "page_km_add",
+            "name": "Add Kitchen",
+            "price": 10
+          },
+          {
+            "id": "page_km_active",
+            "name": "Active Orders",
+            "price": 10
+          }
+        ],
+        "price": 35
+      },
+      {
+        "id": "mod_order_tracking",
+        "isParent": true,
+        "name": "Order Tracking",
+        "pages": [
+          {
+            "id": "page_trk_act",
+            "name": "Active Orders",
+            "price": 0
+          }
+        ],
+        "price": 0
+      },
+      {
+        "id": "mod_customer_mgmt",
+        "isParent": true,
+        "name": "Customer Management",
+        "pages": [
+          {
+            "id": "page_cm_list",
+            "name": "Customer List",
+            "price": 5
+          },
+          {
+            "id": "page_cm_create",
+            "name": "Create Customer",
+            "price": 5
+          },
+          {
+            "id": "page_cm_group",
+            "name": "Customer Group",
+            "price": 5
+          }
+        ],
+        "price": 15
+      },
+      {
+        "id": "mod_inventory_mgmt",
+        "isParent": true,
+        "name": "Inventory Management",
+        "pages": [
+          {
+            "id": "page_im_list",
+            "name": "Items List",
+            "price": 10
+          },
+          {
+            "id": "page_im_create",
+            "name": "Create Item",
+            "price": 10
+          },
+          {
+            "id": "page_im_hidden",
+            "name": "Hidden Items",
+            "price": 5
+          },
+          {
+            "id": "page_im_grplist",
+            "name": "Item Group List",
+            "price": 5
+          },
+          {
+            "id": "page_im_addgrp",
+            "name": "Add Item Group",
+            "price": 5
+          },
+          {
+            "id": "page_im_variant",
+            "name": "Create Variant",
+            "price": 10
+          },
+          {
+            "id": "page_im_ingred",
+            "name": "Add Ingredients & Nutrition",
+            "price": 15
+          },
+          {
+            "id": "page_im_combo",
+            "name": "Combo Offer",
+            "price": 10
+          }
+        ],
+        "price": 70
+      },
+      {
+        "id": "mod_purchase_mgmt",
+        "isParent": true,
+        "name": "Purchase Management",
+        "pages": [
+          {
+            "id": "page_pm_sup",
+            "name": "Suppliers",
+            "price": 10
+          },
+          {
+            "id": "page_pm_grplist",
+            "name": "Supplier Group List",
+            "price": 5
+          },
+          {
+            "id": "page_pm_items",
+            "name": "Items List",
+            "price": 5
+          },
+          {
+            "id": "page_pm_order",
+            "name": "Purchase Order",
+            "price": 15
+          },
+          {
+            "id": "page_pm_rect",
+            "name": "Purchase Receipt",
+            "price": 10
+          },
+          {
+            "id": "page_pm_inv",
+            "name": "Purchase Invoice",
+            "price": 10
+          },
+          {
+            "id": "page_pm_rep",
+            "name": "Purchase Reports",
+            "price": 10
+          }
+        ],
+        "price": 65
+      },
+      {
+        "id": "mod_hr_payroll",
+        "isParent": true,
+        "name": "HR & Payroll",
+        "pages": [
+          {
+            "id": "page_hr_addemp",
+            "name": "Add Employee",
+            "price": 10
+          },
+          {
+            "id": "page_hr_emplist",
+            "name": "Employee List",
+            "price": 5
+          },
+          {
+            "id": "page_hr_delpersons",
+            "name": "Delivery Persons",
+            "price": 10
+          },
+          {
+            "id": "page_hr_empdet",
+            "name": "Employee Details",
+            "price": 10
+          },
+          {
+            "id": "page_hr_empdesig",
+            "name": "Employee Designations",
+            "price": 5
+          },
+          {
+            "id": "page_hr_emptypes",
+            "name": "Employee Types",
+            "price": 5
+          },
+          {
+            "id": "page_hr_empdepts",
+            "name": "Employee Departments",
+            "price": 5
+          },
+          {
+            "id": "page_hr_att",
+            "name": "Attendance",
+            "price": 10
+          },
+          {
+            "id": "page_hr_attview",
+            "name": "Attendance View",
+            "price": 5
+          },
+          {
+            "id": "page_hr_salslip",
+            "name": "Salary Slip",
+            "price": 15
+          },
+          {
+            "id": "page_hr_salrect",
+            "name": "Salary Receipt List",
+            "price": 10
+          },
+          {
+            "id": "page_hr_lvtype",
+            "name": "Leave Type",
+            "price": 5
+          },
+          {
+            "id": "page_hr_lvalloc",
+            "name": "Leave Allocation",
+            "price": 10
+          },
+          {
+            "id": "page_hr_lvapply",
+            "name": "Leave Apply",
+            "price": 5
+          },
+          {
+            "id": "page_hr_schmas",
+            "name": "Schedule Master",
+            "price": 10
+          },
+          {
+            "id": "page_hr_schass",
+            "name": "Schedule Assign Employee",
+            "price": 10
+          },
+          {
+            "id": "page_hr_roaster",
+            "name": "Roaster",
+            "price": 10
+          },
+          {
+            "id": "page_hr_users",
+            "name": "Users",
+            "price": 10
+          },
+          {
+            "id": "page_hr_hollist",
+            "name": "Holiday List",
+            "price": 5
+          },
+          {
+            "id": "page_hr_extdoc",
+            "name": "Extended DocType",
+            "price": 20
+          }
+        ],
+        "price": 175
+      },
+      {
+        "id": "mod_vehicle_mgmt",
+        "isParent": true,
+        "name": "Vehicle Management",
+        "pages": [
+          {
+            "id": "page_veh_mgmt",
+            "name": "Vehicle Management",
+            "price": 15
+          }
+        ],
+        "price": 15
+      },
+      {
+        "id": "mod_address_mgmt",
+        "isParent": true,
+        "name": "Address Management",
+        "pages": [
+          {
+            "id": "page_add_struc",
+            "name": "Address Structure",
+            "price": 10
+          }
+        ],
+        "price": 10
+      },
+      {
+        "id": "mod_reports",
+        "isParent": true,
+        "name": "Reports",
+        "pages": [
+          {
+            "id": "page_rep_inv",
+            "name": "Sales Invoice",
+            "price": 10
+          },
+          {
+            "id": "page_rep_sal",
+            "name": "Sales Report",
+            "price": 10
+          },
+          {
+            "id": "page_rep_kanban",
+            "name": "Sales Kanban",
+            "price": 15
+          },
+          {
+            "id": "page_rep_trip",
+            "name": "Trip Report",
+            "price": 15
+          }
+        ],
+        "price": 50
+      },
+      {
+        "id": "mod_multi_branch",
+        "isParent": true,
+        "name": "Multi Branch Support",
+        "pages": [
+          {
+            "id": "page_mb_tenants",
+            "name": "Manage Tenants",
+            "price": 20
+          },
+          {
+            "id": "page_mb_comp",
+            "name": "Manage Companies",
+            "price": 15
+          },
+          {
+            "id": "page_mb_branch",
+            "name": "Manage Branches",
+            "price": 15
+          },
+          {
+            "id": "page_mb_compdet",
+            "name": "Company Details",
+            "price": 10
+          }
+        ],
+        "price": 60
+      },
+      {
+        "id": "mod_auth",
+        "isParent": true,
+        "name": "Authentication",
+        "pages": [
+          {
+            "id": "page_auth_log",
+            "name": "Login",
+            "price": 5
+          },
+          {
+            "id": "page_auth_reg",
+            "name": "Register",
+            "price": 5
+          }
+        ],
+        "price": 10
+      },
+      {
+        "id": "mod_role_mgmt",
+        "isParent": true,
+        "name": "Role Management",
+        "pages": [
+          {
+            "id": "page_role_perm",
+            "name": "Role Permissions",
+            "price": 15
+          }
+        ],
+        "price": 15
+      },
+      {
+        "id": "mod_admin_dashboard",
+        "isParent": true,
+        "name": "Admin Dashboard",
+        "pages": [
+          {
+            "id": "page_ad_dash",
+            "name": "Dashboard",
+            "price": 10
+          },
+          {
+            "id": "page_ad_pan",
+            "name": "Admin Panel",
+            "price": 15
+          },
+          {
+            "id": "page_ad_main",
+            "name": "Main Page",
+            "price": 10
+          }
+        ],
+        "price": 35
+      },
+      {
+        "id": "mod_notifications",
+        "isParent": true,
+        "name": "Notifications & Voice",
+        "pages": [
+          {
+            "id": "page_notif_main",
+            "name": "Notifications",
+            "price": 10
+          },
+          {
+            "id": "page_notif_voice",
+            "name": "Voice Support",
+            "price": 20
+          }
+        ],
+        "price": 30
+      },
+      {
+        "id": "mod_settings",
+        "isParent": true,
+        "name": "Settings",
+        "pages": [
+          {
+            "id": "page_set_sys",
+            "name": "System Settings",
+            "price": 10
+          },
+          {
+            "id": "page_set_email",
+            "name": "Email Settings",
+            "price": 10
+          },
+          {
+            "id": "page_set_print",
+            "name": "Print Settings",
+            "price": 5
+          },
+          {
+            "id": "page_set_bkp",
+            "name": "Backups",
+            "price": 15
+          },
+          {
+            "id": "page_set_imp",
+            "name": "Advanced Import",
+            "price": 20
+          },
+          {
+            "id": "page_set_work",
+            "name": "Working Days",
+            "price": 5
+          },
+          {
+            "id": "page_set_doc",
+            "name": "DocType Management",
+            "price": 20
+          },
+          {
+            "id": "page_set_tax",
+            "name": "Tax Master",
+            "price": 10
+          }
+        ],
+        "price": 95
+      }
+    ],
+    "tenant_id": "DEFAULT_TENANT",
+    "company_name": "All",
+    "branch_name": "All Branches",
+    "updated_at": "2026-06-22T06:42:41.118997+00:00",
+    "branch_id": null,
+    "company": "All",
+    "branch": "All Branches"
+  }
+]

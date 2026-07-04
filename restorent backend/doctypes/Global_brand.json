@@ -1,0 +1,24 @@
+{
+  "branch": "All Branches",
+  "branch_name": "All Branches",
+  "branch_names": [
+    "All Branches"
+  ],
+  "company_names": [
+    "Global"
+  ],
+  "fields": [
+    {
+      "allow_create_new": false,
+      "hidden": false,
+      "id": "name",
+      "idx": 0,
+      "is_default": false,
+      "label": "Brand Name",
+      "link_doctype": "",
+      "mandatory": true,
+      "type": "Data"
+    }
+  ],
+  "name": "Brand"
+}

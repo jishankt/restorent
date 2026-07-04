@@ -1,0 +1,60 @@
+{
+  "name": "Leave Type",
+  "company_names": [
+    "Global"
+  ],
+  "settings": {
+    "enable_otp_on_edit": false
+  },
+  "fields": [
+    {
+      "id": "leave_code",
+      "label": "Leave Code",
+      "type": "Data",
+      "mandatory": true,
+      "is_default": true
+    },
+    {
+      "id": "leave_name",
+      "label": "Leave Name",
+      "type": "Data",
+      "mandatory": true,
+      "is_default": true
+    },
+    {
+      "id": "is_paid",
+      "label": "Paid Leave (No salary cut)",
+      "type": "Check",
+      "mandatory": false,
+      "is_default": true
+    },
+    {
+      "id": "allow_half_day",
+      "label": "Allow Half Day (0.5 day)",
+      "type": "Check",
+      "mandatory": false,
+      "is_default": true
+    },
+    {
+      "id": "allow_hourly",
+      "label": "Allow Hourly Leave",
+      "type": "Check",
+      "mandatory": false,
+      "is_default": true
+    },
+    {
+      "id": "is_active",
+      "label": "Active",
+      "type": "Check",
+      "mandatory": false,
+      "is_default": true
+    },
+    {
+      "id": "description",
+      "label": "Description (Optional)",
+      "type": "Text",
+      "mandatory": false,
+      "is_default": true
+    }
+  ]
+}

@@ -1,0 +1,122 @@
+{
+  "name": "Leave Apply",
+  "company_names": [
+    "Global"
+  ],
+  "fields": [
+    {
+      "id": "employee_id",
+      "label": "Employee",
+      "type": "Table",
+      "link_doctype": "Employee",
+      "mandatory": true,
+      "is_default": true
+    },
+    {
+      "id": "leave_type_id",
+      "label": "Leave Type",
+      "type": "Table",
+      "link_doctype": "Leave Type",
+      "mandatory": true,
+      "is_default": true
+    },
+    {
+      "id": "leave_mode",
+      "label": "Leave Mode",
+      "type": "Select",
+      "options": [
+        "FULL_DAY",
+        "HALF_DAY",
+        "HOURLY"
+      ],
+      "mandatory": true,
+      "is_default": true
+    },
+    {
+      "id": "from_date",
+      "label": "From Date",
+      "type": "Date",
+      "mandatory": true,
+      "is_default": true
+    },
+    {
+      "id": "to_date",
+      "label": "To Date",
+      "type": "Date",
+      "mandatory": true,
+      "is_default": true
+    },
+    {
+      "id": "from_time",
+      "label": "From Time",
+      "type": "Time",
+      "mandatory": false,
+      "is_default": true
+    },
+    {
+      "id": "to_time",
+      "label": "To Time",
+      "type": "Time",
+      "mandatory": false,
+      "is_default": true
+    },
+    {
+      "id": "total_units",
+      "label": "Total Units",
+      "type": "Number",
+      "mandatory": true,
+      "is_default": true
+    },
+    {
+      "id": "unit_type",
+      "label": "Unit Type",
+      "type": "Select",
+      "options": [
+        "DAYS",
+        "MINUTES"
+      ],
+      "mandatory": true,
+      "is_default": true
+    },
+    {
+      "id": "reason",
+      "label": "Reason",
+      "type": "Text",
+      "mandatory": true,
+      "is_default": true
+    },
+    {
+      "id": "status",
+      "label": "Status",
+      "type": "Select",
+      "options": [
+        "PENDING",
+        "APPROVED",
+        "REJECTED"
+      ],
+      "mandatory": true,
+      "is_default": true
+    },
+    {
+      "id": "approved_by",
+      "label": "Approved By",
+      "type": "Data",
+      "mandatory": false,
+      "is_default": true
+    },
+    {
+      "id": "approved_at",
+      "label": "Approved At",
+      "type": "Date",
+      "mandatory": false,
+      "is_default": true
+    },
+    {
+      "id": "remarks",
+      "label": "Remarks",
+      "type": "Text",
+      "mandatory": false,
+      "is_default": true
+    }
+  ]
+}

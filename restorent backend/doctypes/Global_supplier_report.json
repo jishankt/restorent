@@ -1,0 +1,91 @@
+{
+  "name": "Supplier Report",
+  "company_names": [
+    "Global"
+  ],
+  "fields": [
+    {
+      "id": "code",
+      "label": "Code",
+      "type": "Data",
+      "mandatory": true,
+      "is_default": true,
+      "hidden": false,
+      "idx": 0
+    },
+    {
+      "id": "company",
+      "label": "Company Name",
+      "type": "Data",
+      "mandatory": true,
+      "is_default": true,
+      "hidden": false,
+      "idx": 1
+    },
+    {
+      "id": "group",
+      "label": "Group",
+      "type": "Data",
+      "mandatory": false,
+      "is_default": true,
+      "hidden": false,
+      "idx": 2
+    },
+    {
+      "id": "country",
+      "label": "Country",
+      "type": "Data",
+      "mandatory": false,
+      "is_default": true,
+      "hidden": false,
+      "idx": 3
+    },
+    {
+      "id": "currency",
+      "label": "Currency",
+      "type": "Data",
+      "mandatory": false,
+      "is_default": true,
+      "hidden": false,
+      "idx": 4
+    },
+    {
+      "id": "taxId",
+      "label": "Tax ID",
+      "type": "Data",
+      "mandatory": false,
+      "is_default": true,
+      "hidden": false,
+      "idx": 5
+    },
+    {
+      "id": "contacts",
+      "label": "Contacts",
+      "type": "Data",
+      "mandatory": false,
+      "is_default": true,
+      "hidden": false,
+      "idx": 6
+    },
+    {
+      "id": "lastPurchaseDate",
+      "label": "Last Purchase Date",
+      "type": "Data",
+      "mandatory": false,
+      "is_default": true,
+      "hidden": false,
+      "idx": 7
+    },
+    {
+      "id": "actions",
+      "label": "Actions",
+      "type": "Data",
+      "mandatory": false,
+      "is_default": true,
+      "hidden": false,
+      "idx": 8
+    }
+  ],
+  "company_name": "All",
+  "company": "All"
+}

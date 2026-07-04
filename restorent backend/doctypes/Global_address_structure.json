@@ -1,0 +1,91 @@
+{
+  "company_names": [
+    "Global"
+  ],
+  "fields": [
+    {
+      "allow_create_new": false,
+      "hidden": false,
+      "id": "country_name",
+      "idx": 0,
+      "is_default": false,
+      "label": "Country Name",
+      "link_doctype": "",
+      "mandatory": false,
+      "type": "Data"
+    },
+    {
+      "allow_create_new": false,
+      "hidden": false,
+      "id": "field1_label",
+      "idx": 1,
+      "is_default": false,
+      "label": "Field 1 Label",
+      "link_doctype": "",
+      "mandatory": false,
+      "type": "Data"
+    },
+    {
+      "allow_create_new": false,
+      "id": "field2_label",
+      "idx": 2,
+      "is_default": true,
+      "label": "Field 2 Label",
+      "mandatory": false,
+      "type": "Data"
+    },
+    {
+      "allow_create_new": false,
+      "id": "field3_label",
+      "idx": 3,
+      "is_default": true,
+      "label": "Field 3 Label",
+      "mandatory": false,
+      "type": "Data"
+    },
+    {
+      "allow_create_new": false,
+      "hidden": false,
+      "id": "field_4label",
+      "idx": 4,
+      "is_default": false,
+      "label": "Field 4Label",
+      "link_doctype": "",
+      "mandatory": false,
+      "type": "Data"
+    },
+    {
+      "allow_create_new": false,
+      "id": "flat_villa_no",
+      "idx": 5,
+      "is_default": false,
+      "label": "Flat / Villa No",
+      "mandatory": false,
+      "type": "Data"
+    },
+    {
+      "allow_create_new": false,
+      "id": "building_name",
+      "idx": 6,
+      "is_default": false,
+      "label": "Building / Street Name",
+      "mandatory": false,
+      "type": "Data"
+    },
+    {
+      "allow_create_new": false,
+      "hidden": false,
+      "id": "pin_code",
+      "idx": 7,
+      "is_default": false,
+      "label": "PIN CODE",
+      "link_doctype": "",
+      "mandatory": false,
+      "type": "Number"
+    }
+  ],
+  "name": "Address Structure",
+  "settings": {
+    "enable_otp_on_edit": true
+  }
+}

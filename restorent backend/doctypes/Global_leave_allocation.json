@@ -1,0 +1,47 @@
+{
+  "name": "Leave Allocation",
+  "company_names": [
+    "Global"
+  ],
+  "fields": [
+    {
+      "id": "leave_type_id",
+      "label": "Select Leave Type",
+      "type": "Data",
+      "mandatory": true,
+      "is_default": true
+    },
+    {
+      "id": "credit_unit",
+      "label": "Unit (DAYS / MINUTES)",
+      "type": "Select",
+      "options": [
+        "DAYS",
+        "MINUTES"
+      ],
+      "mandatory": true,
+      "is_default": true
+    },
+    {
+      "id": "monthly_credit",
+      "label": "Monthly Credit",
+      "type": "Number",
+      "mandatory": true,
+      "is_default": true
+    },
+    {
+      "id": "yearly_credit",
+      "label": "Yearly Credit",
+      "type": "Number",
+      "mandatory": true,
+      "is_default": true
+    },
+    {
+      "id": "is_active",
+      "label": "Active",
+      "type": "Check",
+      "mandatory": false,
+      "is_default": true
+    }
+  ]
+}
