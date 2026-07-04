@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Assistant</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ── Header bar ─────────────────────────────────────── */
+        .chatbot-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 8px 12px 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+
+        .chatbot-header-top {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chatbot-header-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: white;
+            flex: 1;
+        }
+
+        /* Order-type badge — shown when an order type is locked */
+        #order-type-badge {
+            display: none;   /* shown by script.js */
+            align-items: center;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11.5px;
+            font-weight: 700;
+            border: 1.5px solid transparent;
+            gap: 4px;
+            transition: all 0.2s ease;
+        }
+
+        /* Page context row */
+        .page-context-bar {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 10.5px;
+            color: rgba(255,255,255,0.78);
+        }
+
+        .page-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #7dffb0;
+            flex-shrink: 0;
+            animation: pulse 2s infinite;
+        }
+
+        #current-page-tag {
+            font-weight: 600;
+            color: #c3f0ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="chatbot-window">
+
+        <!-- ── Header ───────────────────────────────────────── -->
+        <div class="chatbot-header">
+            <div class="chatbot-header-top">
+                <span class="chatbot-header-title">🤖 DineBot</span>
+                <!-- Order type badge: hidden until user picks a type -->
+                <span id="order-type-badge"></span>
+            </div>
+            <div class="page-context-bar">
+                <span class="page-dot"></span>
+                Currently on:&nbsp;<span id="current-page-tag">Loading...</span>
+            </div>
+        </div>
+
+        <!-- ── Messages area ─────────────────────────────────── -->
+        <div class="chatbot-messages" id="chat-messages">
+            <!-- Welcome bubble with 3 order-type buttons -->
+            <div class="chat-bubble bot" id="welcome-bubble">
+                👋 Hi! I'm <strong>DineBot</strong>. Select an order type to begin:
+                <div class="inline-actions" id="inline-actions">
+                    <button class="inline-btn" data-order="Dine In">🪑 Dine In</button>
+                    <button class="inline-btn" data-order="Take Away">🧳 Take Away</button>
+                    <button class="inline-btn" data-order="Online Delivery">🛵 Delivery</button>
+                    <button class="inline-btn" data-order="add-customer">👤 Add Customer</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Input area ────────────────────────────────────── -->
+        <form class="chatbot-input-area" id="chat-form">
+            <input type="text" id="chat-input" placeholder="Type a message..." autocomplete="off">
+            <button type="submit" id="send-btn" class="chatbot-send-btn" disabled>➤</button>
+        </form>
+    </div>
+    <script src="script.js?v=20260703b"></script>
+</body>
+</html>
